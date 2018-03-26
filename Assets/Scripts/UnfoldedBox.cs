@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UnfoldedBox : MonoBehaviour {
+public class UnfoldedBox : VisualBox {
 
     public Image front;
     public Image back;
@@ -31,7 +31,7 @@ public class UnfoldedBox : MonoBehaviour {
         stampImages = new List<Image>();
     }
 
-    public void UnfoldBox(Box box)
+    public override void ApplyBox(Box box)
     {
         foreach (Face face in box.faces)
         {
@@ -51,7 +51,7 @@ public class UnfoldedBox : MonoBehaviour {
         }
     }
 
-    public void Clear()
+    public override void Clear()
     {
         foreach(Image stamp in stampImages)
         {

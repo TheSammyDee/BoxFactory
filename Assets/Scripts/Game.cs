@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
 
-    public UnfoldedBox unfoldedSolution;
+    public VisualBox unfoldedSolution;
+    public VisualBox foldedSolution;
+    public bool flatBox;
     public Text resultText;
     public Text commandList;
     public Button doneButton;
@@ -13,11 +15,14 @@ public class Game : MonoBehaviour {
 
     private Box solutionBox;
     private Box box;
+    private VisualBox visualSolution;
 
 	// Use this for initialization
 	void Start () {
+        visualSolution = flatBox ? unfoldedSolution : foldedSolution;
+
         CreateSolution();
-        unfoldedSolution.UnfoldBox(solutionBox);
+        visualSolution.ApplyBox(solutionBox);
 
         resetButton.gameObject.SetActive(false);
 
@@ -69,8 +74,8 @@ public class Game : MonoBehaviour {
         else
         {
             resultText.text = "Nope";
-            unfoldedSolution.Clear();
-            unfoldedSolution.UnfoldBox(box);
+            visualSolution.Clear();
+            visualSolution.ApplyBox(box);
         }
 
         doneButton.gameObject.SetActive(false);
@@ -80,8 +85,8 @@ public class Game : MonoBehaviour {
     public void ResetGame()
     {
         resultText.text = "";
-        unfoldedSolution.Clear();
-        unfoldedSolution.UnfoldBox(solutionBox);
+        visualSolution.Clear();
+        visualSolution.ApplyBox(solutionBox);
         commandList.text = "";
         box = new Box();
 
