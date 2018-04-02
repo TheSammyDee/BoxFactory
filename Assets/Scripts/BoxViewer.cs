@@ -6,7 +6,7 @@ public class BoxViewer : MonoBehaviour
 {
     public BoxCamRotator boxCamRotator;
 
-    private float rotationRatioX = 0.5f;
+    private float rotationRatioX = 0.3f;
     private float rotationRatioY = 0.1f;
 
     private bool moving;
