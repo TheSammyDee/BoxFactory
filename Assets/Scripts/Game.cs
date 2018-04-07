@@ -12,6 +12,9 @@ public class Game : MonoBehaviour {
     public Text commandList;
     public Button doneButton;
     public Button resetButton;
+    public Button resultButton;
+    public Button goalButton;
+    public BoxCamRotator boxCamRotator;
 
     private Box solutionBox;
     private Box box;
@@ -20,13 +23,8 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         visualSolution = flatBox ? unfoldedSolution : foldedSolution;
-
         CreateSolution();
-        visualSolution.ApplyBox(solutionBox);
-
-        resetButton.gameObject.SetActive(false);
-
-        box = new Box();	
+        ResetGame();	
 	}
 	
 	// Update is called once per frame
@@ -74,24 +72,43 @@ public class Game : MonoBehaviour {
         else
         {
             resultText.text = "Nope";
-            visualSolution.Clear();
             visualSolution.ApplyBox(box);
         }
 
         doneButton.gameObject.SetActive(false);
         resetButton.gameObject.SetActive(true);
+        resultButton.gameObject.SetActive(true);
+        goalButton.gameObject.SetActive(true);
+    }
+
+    public void ShowResult()
+    {
+        visualSolution.ApplyBox(box);
+        resultButton.interactable = false;
+        goalButton.interactable = true;
+    }
+
+    public void ShowGoal()
+    {
+        visualSolution.ApplyBox(solutionBox);
+        goalButton.interactable = false;
+        resultButton.interactable = true;
     }
 
     public void ResetGame()
     {
         resultText.text = "";
-        visualSolution.Clear();
         visualSolution.ApplyBox(solutionBox);
         commandList.text = "";
         box = new Box();
+        boxCamRotator.Reset();
 
         doneButton.gameObject.SetActive(true);
         resetButton.gameObject.SetActive(false);
+        resultButton.interactable = false;
+        resultButton.gameObject.SetActive(false);
+        goalButton.gameObject.SetActive(false);
+        goalButton.interactable = true;
     }
 
     private bool CompareToSolution(Box box)
