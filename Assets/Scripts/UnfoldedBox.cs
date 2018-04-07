@@ -33,6 +33,7 @@ public class UnfoldedBox : VisualBox {
 
     public override void ApplyBox(Box box)
     {
+        Clear();
         foreach (Face face in box.faces)
         {
             if (face.stamps.Count > 0)
