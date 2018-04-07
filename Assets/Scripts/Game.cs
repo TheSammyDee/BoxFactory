@@ -5,25 +5,31 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
 
-    public VisualBox unfoldedSolution;
-    public VisualBox foldedSolution;
-    public bool flatBox;
+    public VisualBox unfoldedBoxView;
+    public VisualBox foldedBoxView;
+
+    public bool flatViewOn;
     public Text resultText;
     public Text commandList;
     public Button doneButton;
     public Button resetButton;
     public Button resultButton;
     public Button goalButton;
-    public BoxCamRotator boxCamRotator;
+    public Text boxTypeButtonText;
+
+    public BoxViewer boxViewer;
 
     private Box solutionBox;
-    private Box box;
-    private VisualBox visualSolution;
+    private Box playerBox;
+    private Box showingBox;
+    private VisualBox boxView;
 
 	// Use this for initialization
-	void Start () {
-        visualSolution = flatBox ? unfoldedSolution : foldedSolution;
-        CreateSolution();
+	void Start ()
+    {
+        solutionBox = CreateSolution();
+        showingBox = solutionBox;
+        SetFlatBoxView(flatViewOn);
         ResetGame();	
 	}
 	
@@ -32,38 +38,55 @@ public class Game : MonoBehaviour {
 		
 	}
 
-    private void CreateSolution()
+    private Box CreateSolution()
     {
-        solutionBox = new Box();
-        solutionBox.RotateZLeft();
-        solutionBox.Stamp();
-        solutionBox.RotateYLeft();
-        solutionBox.RotateYLeft();
-        solutionBox.RotateZLeft();
-        solutionBox.Stamp();
+        Box box = new Box();
+        box.RotateZLeft();
+        box.Stamp();
+        box.RotateYLeft();
+        box.RotateYLeft();
+        box.RotateZLeft();
+        box.Stamp();
+
+        return box;
+    }
+
+    public void ToggleBoxView()
+    {
+        flatViewOn = !flatViewOn;
+        SetFlatBoxView(flatViewOn);
+    }
+
+    public void SetFlatBoxView(bool value)
+    {
+        boxView = value ? unfoldedBoxView : foldedBoxView;
+        boxViewer.gameObject.SetActive(!value);
+        unfoldedBoxView.gameObject.SetActive(value);
+        boxView.ApplyBox(showingBox);
+        boxTypeButtonText.text = value ? "3D" : "2D";
     }
 
     public void RotateYLeft()
     {
         commandList.text = commandList.text + "Left Y\n";
-        box.RotateYLeft();
+        playerBox.RotateYLeft();
     }
 
     public void RotateZLeft()
     {
         commandList.text = commandList.text + "Left Z\n";
-        box.RotateZLeft();
+        playerBox.RotateZLeft();
     }
 
     public void Stamp()
     {
         commandList.text = commandList.text + "Stamp\n";
-        box.Stamp();
+        playerBox.Stamp();
     }
 
     public void Done()
     {
-        bool result = CompareToSolution(box);
+        bool result = CompareToSolution(playerBox);
 
         if (result)
         {
@@ -72,7 +95,7 @@ public class Game : MonoBehaviour {
         else
         {
             resultText.text = "Nope";
-            visualSolution.ApplyBox(box);
+            boxView.ApplyBox(playerBox);
         }
 
         doneButton.gameObject.SetActive(false);
@@ -83,14 +106,16 @@ public class Game : MonoBehaviour {
 
     public void ShowResult()
     {
-        visualSolution.ApplyBox(box);
+        showingBox = playerBox;
+        boxView.ApplyBox(showingBox);
         resultButton.interactable = false;
         goalButton.interactable = true;
     }
 
     public void ShowGoal()
     {
-        visualSolution.ApplyBox(solutionBox);
+        showingBox = solutionBox;
+        boxView.ApplyBox(showingBox);
         goalButton.interactable = false;
         resultButton.interactable = true;
     }
@@ -98,10 +123,11 @@ public class Game : MonoBehaviour {
     public void ResetGame()
     {
         resultText.text = "";
-        visualSolution.ApplyBox(solutionBox);
+        showingBox = solutionBox;
+        boxView.ApplyBox(showingBox);
         commandList.text = "";
-        box = new Box();
-        boxCamRotator.Reset();
+        playerBox = new Box();
+        boxViewer.ResetView();
 
         doneButton.gameObject.SetActive(true);
         resetButton.gameObject.SetActive(false);

@@ -35,7 +35,7 @@ public class BoxCamRotator : MonoBehaviour
         transform.Rotate(Vector3.right, rotX);
     }
 
-    public void Reset()
+    public void ResetView()
     {
         transform.rotation = Quaternion.Euler(defaultRot);
     }

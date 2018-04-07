@@ -51,13 +51,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9647015bd074da64c9c2284a87ca9a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unfoldedSolution: {fileID: 0}
-  foldedSolution: {fileID: 0}
-  flatBox: 0
+  unfoldedBoxView: {fileID: 0}
+  foldedBoxView: {fileID: 0}
+  flatViewOn: 0
   resultText: {fileID: 0}
   commandList: {fileID: 0}
   doneButton: {fileID: 0}
   resetButton: {fileID: 0}
   resultButton: {fileID: 0}
   goalButton: {fileID: 0}
-  boxCamRotator: {fileID: 0}
+  boxTypeButtonText: {fileID: 0}
+  boxViewer: {fileID: 0}

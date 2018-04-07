@@ -35,4 +35,9 @@ public class BoxViewer : MonoBehaviour
     {
 
     }
+
+    public void ResetView()
+    {
+        boxCamRotator.ResetView();
+    }
 }
