@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UnfoldedBox : VisualBox {
@@ -50,6 +51,11 @@ public class UnfoldedBox : VisualBox {
                 }
             }
         }
+    }
+
+    public override void AnimateBox(List<Command> commands, UnityAction onFinishAnimation)
+    {
+        throw new System.NotImplementedException();
     }
 
     public override void Clear()

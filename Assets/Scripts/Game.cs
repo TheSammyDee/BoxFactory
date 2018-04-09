@@ -23,6 +23,7 @@ public class Game : MonoBehaviour {
     private Box playerBox;
     private Box showingBox;
     private VisualBox boxView;
+    private List<VisualBox.Command> animationCommands;
 
 	// Use this for initialization
 	void Start ()
@@ -30,6 +31,7 @@ public class Game : MonoBehaviour {
         solutionBox = CreateSolution();
         showingBox = solutionBox;
         SetFlatBoxView(flatViewOn);
+        animationCommands = new List<VisualBox.Command>();
         ResetGame();	
 	}
 	
@@ -69,23 +71,46 @@ public class Game : MonoBehaviour {
     public void RotateYLeft()
     {
         commandList.text = commandList.text + "Left Y\n";
+        animationCommands.Add(VisualBox.Command.Left90Y);
         playerBox.RotateYLeft();
     }
 
     public void RotateZLeft()
     {
         commandList.text = commandList.text + "Left Z\n";
+        animationCommands.Add(VisualBox.Command.Left90Z);
         playerBox.RotateZLeft();
     }
 
     public void Stamp()
     {
         commandList.text = commandList.text + "Stamp\n";
+        animationCommands.Add(VisualBox.Command.Stamp);
         playerBox.Stamp();
     }
 
     public void Done()
     {
+        ActivateButtons(false);
+        flatViewOn = false;
+        SetFlatBoxView(flatViewOn);
+        boxViewer.ResetView();
+        foldedBoxView.AnimateBox(animationCommands, OnFinishDoneAnimation);
+    }
+
+    private void ActivateButtons(bool value)
+    {
+        Button[] buttons = FindObjectsOfType<Button>();
+        foreach (Button button in buttons)
+        {
+            button.interactable = value;
+        }
+    }
+
+    private void OnFinishDoneAnimation()
+    {
+        ActivateButtons(true);
+
         bool result = CompareToSolution(playerBox);
 
         if (result)
@@ -94,9 +119,11 @@ public class Game : MonoBehaviour {
         }
         else
         {
-            resultText.text = "Nope";
-            boxView.ApplyBox(playerBox);
+            resultText.text = "Nope"; 
         }
+
+        boxViewer.ResetView();
+        boxView.ApplyBox(playerBox);
 
         doneButton.gameObject.SetActive(false);
         resetButton.gameObject.SetActive(true);
@@ -128,6 +155,7 @@ public class Game : MonoBehaviour {
         commandList.text = "";
         playerBox = new Box();
         boxViewer.ResetView();
+        animationCommands.Clear();
 
         doneButton.gameObject.SetActive(true);
         resetButton.gameObject.SetActive(false);

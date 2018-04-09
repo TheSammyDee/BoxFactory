@@ -7,13 +7,16 @@ public class BoxCamRotator : MonoBehaviour
     private float maxRotY = 155;
     private float maxRotX = 50;
 
-    private float rotX = 0;
-    private float rotY = -20;
+    private const float ROT_X_START = 0;
+    private const float ROT_Y_START = -20;
+    private float rotX;
+    private float rotY;
     private Vector3 defaultRot;
 
     private void Start()
     {
-        defaultRot = new Vector3(0, rotY, 0);
+        defaultRot = new Vector3(0, ROT_Y_START, 0);
+        ResetView();
     }
 
     public void RotateCam(Vector2 delta)
@@ -38,5 +41,7 @@ public class BoxCamRotator : MonoBehaviour
     public void ResetView()
     {
         transform.rotation = Quaternion.Euler(defaultRot);
+        rotX = ROT_X_START;
+        rotY = ROT_Y_START;
     }
 }
