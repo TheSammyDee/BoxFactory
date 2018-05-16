@@ -5,6 +5,7 @@ using UnityEngine;
 public class BoxViewer : MonoBehaviour
 {
     public BoxCamRotator boxCamRotator;
+    public VisualBox box;
 
     private float rotationRatioX = 0.3f;
     private float rotationRatioY = 0.1f;
@@ -26,7 +27,7 @@ public class BoxViewer : MonoBehaviour
     public void OnDrag()
     {
         Vector2 delta = Input.mousePosition - lastPos;
-        delta.y = -delta.y;
+        delta.x = -delta.x;
         boxCamRotator.RotateCam(new Vector2(delta.x * rotationRatioX, delta.y * rotationRatioY));
         lastPos = Input.mousePosition;
     }
@@ -39,5 +40,10 @@ public class BoxViewer : MonoBehaviour
     public void ResetView()
     {
         boxCamRotator.ResetView();
+    }
+
+    public void ShowBox(bool value)
+    {
+        box.gameObject.SetActive(value);
     }
 }

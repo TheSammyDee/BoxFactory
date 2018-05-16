@@ -56,7 +56,7 @@ public class FoldedBox : VisualBox {
                     if (commandNum == animationCommands.Count)
                     {
                         animating = false;
-                        transform.rotation = Quaternion.identity;
+                        transform.localRotation = Quaternion.identity;
                         FinishAnimation();
                     }
                     else
@@ -123,7 +123,7 @@ public class FoldedBox : VisualBox {
         {
             if (rotationCounter > rotationGoal)
             {
-                transform.Rotate(rotationAxis, rotationGoal - rotationCounter);
+                transform.Rotate(rotationAxis, rotationGoal - rotationCounter, Space.World);
             }
             commandNum++;
             paused = true;
@@ -152,7 +152,7 @@ public class FoldedBox : VisualBox {
 
     public override void AnimateBox(List<VisualBox.Command> commands, UnityAction onFinishAnimation)
     {
-        transform.rotation = Quaternion.identity;
+        transform.localRotation = Quaternion.identity;
         Clear();
         FinishAnimation = onFinishAnimation;
         animationCommands = commands;

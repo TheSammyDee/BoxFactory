@@ -62,7 +62,7 @@ public class Game : MonoBehaviour {
     public void SetFlatBoxView(bool value)
     {
         boxView = value ? unfoldedBoxView : foldedBoxView;
-        boxViewer.gameObject.SetActive(!value);
+        boxViewer.ShowBox(!value);
         unfoldedBoxView.gameObject.SetActive(value);
         boxView.ApplyBox(showingBox);
         boxTypeButtonText.text = value ? "3D" : "2D";
