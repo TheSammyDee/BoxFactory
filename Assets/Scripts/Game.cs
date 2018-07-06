@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
 
-    public VisualBox unfoldedBoxView;
-    public VisualBox foldedBoxView;
+    public VisualBox boxView2D;
+    public VisualBox boxView3D;
 
-    public bool flatViewOn;
+    public bool viewIs2D;
     public Text resultText;
     public Text commandList;
     public Button doneButton;
@@ -30,7 +30,7 @@ public class Game : MonoBehaviour {
     {
         solutionBox = CreateSolution();
         showingBox = solutionBox;
-        SetFlatBoxView(flatViewOn);
+        Set2DBoxView(viewIs2D);
         animationCommands = new List<VisualBox.Command>();
         ResetGame();	
 	}
@@ -55,15 +55,15 @@ public class Game : MonoBehaviour {
 
     public void ToggleBoxView()
     {
-        flatViewOn = !flatViewOn;
-        SetFlatBoxView(flatViewOn);
+        viewIs2D = !viewIs2D;
+        Set2DBoxView(viewIs2D);
     }
 
-    public void SetFlatBoxView(bool value)
+    public void Set2DBoxView(bool value)
     {
-        boxView = value ? unfoldedBoxView : foldedBoxView;
+        boxView = value ? boxView2D : boxView3D;
         boxViewer.ShowBox(!value);
-        unfoldedBoxView.gameObject.SetActive(value);
+        boxView2D.gameObject.SetActive(value);
         boxView.ApplyBox(showingBox);
         boxTypeButtonText.text = value ? "3D" : "2D";
     }
@@ -92,10 +92,10 @@ public class Game : MonoBehaviour {
     public void Done()
     {
         ActivateButtons(false);
-        flatViewOn = false;
-        SetFlatBoxView(flatViewOn);
+        viewIs2D = false;
+        Set2DBoxView(viewIs2D);
         boxViewer.ResetView();
-        foldedBoxView.AnimateBox(animationCommands, OnFinishDoneAnimation);
+        boxView3D.AnimateBox(animationCommands, OnFinishDoneAnimation);
     }
 
     private void ActivateButtons(bool value)

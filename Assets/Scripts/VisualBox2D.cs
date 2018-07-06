@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class UnfoldedBox : VisualBox {
+public class VisualBox2D : VisualBox {
 
     public Image front;
     public Image back;

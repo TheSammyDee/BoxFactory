@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class FoldedBox : VisualBox {
+public class VisualBox3D : VisualBox {
 
     public GameObject front;
     public GameObject back;
