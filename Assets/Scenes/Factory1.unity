@@ -454,6 +454,16 @@ Prefab:
       propertyPath: boxViewer
       value: 
       objectReference: {fileID: 1282420997}
+    - target: {fileID: 114783121775013200, guid: fe7de96958c63844b92c261d6fe857fd,
+        type: 2}
+      propertyPath: boxView2D
+      value: 
+      objectReference: {fileID: 827607744}
+    - target: {fileID: 114783121775013200, guid: fe7de96958c63844b92c261d6fe857fd,
+        type: 2}
+      propertyPath: boxView3D
+      value: 
+      objectReference: {fileID: 2081786382}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fe7de96958c63844b92c261d6fe857fd, type: 2}
   m_IsPrefabParent: 0
@@ -496,17 +506,9 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4133357979115694, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4133357979115694, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4133357979115694, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 1
+    - target: {fileID: 1609038592828314, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
+      propertyPath: m_Name
+      value: 3D Box
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}

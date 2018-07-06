@@ -14,7 +14,7 @@ public class VisualBox3D : VisualBox {
 
     public GameObject stampPrefab;
 
-    private const float PAUSE_TIME = 0.6f;
+    private const float PAUSE_TIME = 0.8f;
     private const int ROTATION_SPEED = 90;
 
     private List<GameObject> stampObjects;
@@ -103,7 +103,10 @@ public class VisualBox3D : VisualBox {
     {
         GameObject go = GameObject.Instantiate<GameObject>(stampPrefab);
         go.transform.rotation = Quaternion.LookRotation(Vector3.down, Vector3.back);
-        go.transform.position = transform.position + (Vector3.forward * front.transform.localPosition.z * transform.localScale.z);
+
+        float boxRadius = (transform.localPosition.z - front.transform.localPosition.z);
+        float worldBoxRadius = boxRadius * transform.lossyScale.z;
+        go.transform.position = transform.position - (Vector3.forward * worldBoxRadius);
         Vector3 scale = go.transform.localScale;
         go.transform.SetParent(transform, true);
         go.transform.localScale = scale;
