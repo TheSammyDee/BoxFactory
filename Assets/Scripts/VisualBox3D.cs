@@ -126,7 +126,12 @@ public class VisualBox3D : VisualBox {
         {
             if (rotationCounter > rotationGoal)
             {
-                transform.Rotate(rotationAxis, rotationGoal - rotationCounter, Space.World);
+                // round euler values to nearest multiple of 90 to prevent angle drifting
+                Vector3 angles = transform.rotation.eulerAngles;
+                angles.x = 90 * (int)Mathf.Round(angles.x / 90.0f);
+                angles.y = 90 * (int)Mathf.Round(angles.y / 90.0f);
+                angles.z = 90 * (int)Mathf.Round(angles.z / 90.0f);
+                transform.rotation = Quaternion.Euler(angles);
             }
             commandNum++;
             paused = true;
