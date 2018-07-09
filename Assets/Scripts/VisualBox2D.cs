@@ -53,11 +53,6 @@ public class VisualBox2D : VisualBox {
         }
     }
 
-    public override void AnimateBox(List<Command> commands, UnityAction onFinishAnimation)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void Clear()
     {
         foreach(Image stamp in stampImages)

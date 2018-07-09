@@ -24,6 +24,7 @@ public class Game : MonoBehaviour {
     private Box showingBox;
     private VisualBox boxView;
     private List<VisualBox.Command> animationCommands;
+    private BoxAnimator animator;
 
 	// Use this for initialization
 	void Start ()
@@ -32,6 +33,7 @@ public class Game : MonoBehaviour {
         showingBox = solutionBox;
         Set2DBoxView(viewIs2D);
         animationCommands = new List<VisualBox.Command>();
+        animator = new GameObject("Box Animator").AddComponent<BoxAnimator>();
         ResetGame();	
 	}
 	
@@ -95,7 +97,7 @@ public class Game : MonoBehaviour {
         viewIs2D = false;
         Set2DBoxView(viewIs2D);
         boxViewer.ResetView();
-        boxView3D.AnimateBox(animationCommands, OnFinishDoneAnimation);
+        animator.AnimateBox(boxView.transform, boxView, animationCommands, OnFinishDoneAnimation);
     }
 
     private void ActivateButtons(bool value)
