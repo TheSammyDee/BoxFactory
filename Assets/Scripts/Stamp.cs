@@ -11,7 +11,7 @@ public class Stamp
         }
         set
         {
-            _rotation += value;
+            _rotation = value;
             while (_rotation >= 360)
             {
                 _rotation -= 360;

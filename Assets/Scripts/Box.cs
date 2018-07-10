@@ -4,10 +4,13 @@ public class Box
 {
     public List<Face> faces;
 
+    // The right face is on the player's right
     private Face front, back, top, bottom, left, right;
 
     public Box()
     {
+        // The Face name indicates the position in relation to the player
+        // The Face.Side is the face's original position and identifier
         front = new Face(Face.Side.Front);
         back = new Face(Face.Side.Back);
         back.Rotate(180);
@@ -19,6 +22,7 @@ public class Box
         faces = new List<Face> { front, back, top, bottom, left, right };
     }
 
+    // Rotates the Box counterclockwise facing the up direction 
     public void RotateYLeft()
     {
         Face temp = front;
@@ -30,6 +34,7 @@ public class Box
         bottom.Rotate(90); 
     }
 
+    // Rotates the Box counterclockwise facing the forward direction
     public void RotateZLeft()
     {
         Face temp = top;
