@@ -99,4 +99,19 @@ public class BoxTests
         Assert.AreEqual(Face.Side.Bottom, face.side);
         Assert.AreEqual(180, face.stamps[0].rotation);
     }
+
+    [Test]
+    /// <summary>
+    /// Tests that a <see cref="Stamp"/> will not be placed in the same position and orientation as another Stamp;
+    /// </summary>
+    public void BoxTest6_DoubleStampPlacement()
+    {
+        Box box = new Box();
+        bool firstStamp = box.Stamp();
+        Assert.True(firstStamp);
+        bool secondStamp = box.Stamp();
+        Assert.False(secondStamp);
+        Face face = box.faces.Where(f => f.side == Face.Side.Front).First();
+        Assert.AreEqual(1, face.stamps.Count());
+    }
 }

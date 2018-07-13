@@ -50,10 +50,27 @@ public class Box
         back.Rotate(-90);
     }
 
-    public void Stamp()
+    /// <summary>
+    /// Adds a <see cref="Stamp"/> to the current front <see cref="Face"/> unless
+    /// a Stamp has already been placed with the same position and orientation.
+    /// Returns true if a new Stamp is placed, otherwise false;
+    /// </summary>
+    /// <returns></returns>
+    public bool Stamp()
     {
         Stamp stamp = new Stamp();
         stamp.rotation = -front.rotation;
+        if (front.stamps.Count > 0)
+        {
+            for (int i = 0; i < front.stamps.Count; i++)
+            {
+                if (front.stamps[i].rotation == stamp.rotation)
+                {
+                    return false;
+                }
+            }
+        }
         front.stamps.Add(stamp);
+        return true;
     }
 }
