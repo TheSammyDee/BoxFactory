@@ -25,11 +25,15 @@ public class Game : MonoBehaviour {
     private VisualBox boxView;
     private List<VisualBox.Command> animationCommands;
     private BoxAnimator animator;
+    private PuzzleFactory puzzleFactory;
+    private bool solved;
 
 	// Use this for initialization
 	void Start ()
     {
-        solutionBox = CreateSolution();
+        puzzleFactory = new PuzzleFactory();
+        solved = false;
+        solutionBox = puzzleFactory.CreatePuzzle();
         showingBox = solutionBox;
         Set2DBoxView(viewIs2D);
         animationCommands = new List<VisualBox.Command>();
@@ -113,9 +117,9 @@ public class Game : MonoBehaviour {
     {
         ActivateButtons(true);
 
-        bool result = CompareToSolution(playerBox);
+        solved = CompareToSolution(playerBox);
 
-        if (result)
+        if (solved)
         {
             resultText.text = "Correct";
         }
@@ -151,6 +155,12 @@ public class Game : MonoBehaviour {
 
     public void ResetGame()
     {
+        if (solved)
+        {
+            solutionBox = puzzleFactory.CreatePuzzle();
+            solved = false;
+        }
+
         resultText.text = "";
         showingBox = solutionBox;
         boxView.ApplyBox(showingBox);
@@ -177,6 +187,7 @@ public class Game : MonoBehaviour {
             }
             for (int j = 0; j < box.faces[i].stamps.Count; j++)
             {
+                // TODO: Account for stamps in different order on same face
                 if (box.faces[i].stamps[j].rotation != solutionBox.faces[i].stamps[j].rotation)
                 {
                     return false;
