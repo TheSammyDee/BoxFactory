@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class BoxAnimator : MonoBehaviour
 {
-    private const float PAUSE_TIME = 0.8f;
+    private const float PAUSE_TIME = 0.7f;
     private const int ROTATION_SPEED = 90;
 
     private Transform boxTransform;
