@@ -28,4 +28,16 @@ public class Face
             rotation += 360;
         }
     }
+
+    public Face DeepClone()
+    {
+        Face face = new Face(side);
+        face.Rotate(rotation);
+        foreach (Stamp stamp in stamps)
+        {
+            face.stamps.Add(stamp.DeepClone());
+        }
+
+        return face;
+    }
 }

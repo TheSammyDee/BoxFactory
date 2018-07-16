@@ -15,7 +15,7 @@ public class BoxAnimator : MonoBehaviour
     private float pauseTimer;
     private bool paused;
     private bool animating;
-    private List<VisualBox.Command> animationCommands;
+    private List<Box.Command> animationCommands;
     private int commandNum;
     private float rotationCounter;
     private float rotationGoal;
@@ -56,7 +56,7 @@ public class BoxAnimator : MonoBehaviour
             }
             else
             {
-                if (animationCommands[commandNum] == VisualBox.Command.Stamp)
+                if (animationCommands[commandNum] == Box.Command.Stamp)
                 {
                     visualBox.ApplyBox(box);
                     commandNum++;
@@ -70,22 +70,22 @@ public class BoxAnimator : MonoBehaviour
         }
     }
 
-    private void PrepAnimation(VisualBox.Command command)
+    private void PrepAnimation(Box.Command command)
     {
         rotationCounter = 0f;
         switch (command)
         {
-            case VisualBox.Command.Left90Y:
+            case Box.Command.Left90Y:
                 rotationGoal = 90f;
                 rotationAxis = boxTransform.InverseTransformDirection(Vector3.up);
                 box.RotateYLeft();
                 break;
-            case VisualBox.Command.Left90Z:
+            case Box.Command.Left90Z:
                 rotationGoal = 90f;
                 rotationAxis = boxTransform.InverseTransformDirection(Vector3.forward);
                 box.RotateZLeft();
                 break;
-            case VisualBox.Command.Stamp:
+            case Box.Command.Stamp:
                 box.Stamp();
                 break;
         }
@@ -114,7 +114,7 @@ public class BoxAnimator : MonoBehaviour
         }
     }
 
-    public void AnimateBox(Transform boxTransform, VisualBox visualBox, List<VisualBox.Command> commands, UnityAction onFinishAnimation)
+    public void AnimateBox(Transform boxTransform, VisualBox visualBox, List<Box.Command> commands, UnityAction onFinishAnimation)
     {
         this.boxTransform = boxTransform;
         this.visualBox = visualBox;

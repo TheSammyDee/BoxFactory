@@ -26,4 +26,12 @@ public class Stamp
     public Stamp()
     {
     }
+
+    public Stamp DeepClone()
+    {
+        Stamp stamp = new Stamp();
+        stamp.rotation = rotation;
+
+        return stamp;
+    }
 }

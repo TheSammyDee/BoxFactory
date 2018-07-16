@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class VisualBox : MonoBehaviour {
-
-    public enum Command { Left90Y, Left90Z, Stamp };
+public abstract class VisualBox : MonoBehaviour
+{
 
     public abstract void ApplyBox(Box box);
 

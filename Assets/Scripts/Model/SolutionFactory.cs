@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PuzzleFactory
+public class SolutionFactory
 {
     private const float STAMP_INCREMENT = 1f / 6f;
 
     private float stampChance;
     private int stampCount;
 
-    public PuzzleFactory() { }
+    public SolutionFactory() { }
 
     public Box CreatePuzzle()
     {

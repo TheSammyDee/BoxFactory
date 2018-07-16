@@ -3,6 +3,7 @@
 public class Box
 {
     public List<Face> faces;
+    public enum Command { Left90Y, Left90Z, Stamp };
 
     // The right face is on the player's right
     private Face front, back, top, bottom, left, right;
@@ -18,6 +19,18 @@ public class Box
         bottom = new Face(Face.Side.Bottom);
         left = new Face(Face.Side.Left);
         right = new Face(Face.Side.Right);
+
+        faces = new List<Face> { front, back, top, bottom, left, right };
+    }
+
+    public Box(Box box)
+    {
+        front = box.Front().DeepClone();
+        back = box.Back().DeepClone();
+        left = box.Left().DeepClone();
+        right = box.Right().DeepClone();
+        top = box.Top().DeepClone();
+        bottom = box.Bottom().DeepClone();
 
         faces = new List<Face> { front, back, top, bottom, left, right };
     }
@@ -72,5 +85,35 @@ public class Box
         }
         front.stamps.Add(stamp);
         return true;
+    }
+
+    public Face Front()
+    {
+        return front;
+    }
+
+    public Face Back()
+    {
+        return back;
+    }
+
+    public Face Left()
+    {
+        return left;
+    }
+
+    public Face Right()
+    {
+        return right;
+    }
+
+    public Face Top()
+    {
+        return top;
+    }
+
+    public Face Bottom()
+    {
+        return bottom;
     }
 }

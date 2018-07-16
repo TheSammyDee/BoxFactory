@@ -23,20 +23,20 @@ public class Game : MonoBehaviour {
     private Box playerBox;
     private Box showingBox;
     private VisualBox boxView;
-    private List<VisualBox.Command> animationCommands;
+    private List<Box.Command> animationCommands;
     private BoxAnimator animator;
-    private PuzzleFactory puzzleFactory;
+    private SolutionFactory solutionFactory;
     private bool solved;
 
 	// Use this for initialization
 	void Start ()
     {
-        puzzleFactory = new PuzzleFactory();
+        solutionFactory = new SolutionFactory();
         solved = false;
-        solutionBox = puzzleFactory.CreatePuzzle();
+        solutionBox = solutionFactory.CreatePuzzle();
         showingBox = solutionBox;
         Set2DBoxView(viewIs2D);
-        animationCommands = new List<VisualBox.Command>();
+        animationCommands = new List<Box.Command>();
         animator = new GameObject("Box Animator").AddComponent<BoxAnimator>();
         ResetGame();	
 	}
@@ -77,21 +77,21 @@ public class Game : MonoBehaviour {
     public void RotateYLeft()
     {
         commandList.text = commandList.text + "Left Y\n";
-        animationCommands.Add(VisualBox.Command.Left90Y);
+        animationCommands.Add(Box.Command.Left90Y);
         playerBox.RotateYLeft();
     }
 
     public void RotateZLeft()
     {
         commandList.text = commandList.text + "Left Z\n";
-        animationCommands.Add(VisualBox.Command.Left90Z);
+        animationCommands.Add(Box.Command.Left90Z);
         playerBox.RotateZLeft();
     }
 
     public void Stamp()
     {
         commandList.text = commandList.text + "Stamp\n";
-        animationCommands.Add(VisualBox.Command.Stamp);
+        animationCommands.Add(Box.Command.Stamp);
         playerBox.Stamp();
     }
 
@@ -157,7 +157,7 @@ public class Game : MonoBehaviour {
     {
         if (solved)
         {
-            solutionBox = puzzleFactory.CreatePuzzle();
+            solutionBox = solutionFactory.CreatePuzzle();
             solved = false;
         }
 
