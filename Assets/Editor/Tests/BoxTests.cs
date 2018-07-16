@@ -114,4 +114,40 @@ public class BoxTests
         Face face = box.faces.Where(f => f.side == Face.Side.Front).First();
         Assert.AreEqual(1, face.stamps.Count());
     }
+
+    [Test]
+    /// <summary>
+    /// Tests that RotateYLeftInverse function correctly undoes RotateYLeft
+    /// </summary>
+    public void BoxTest7_RotateLeftYInverse()
+    {
+        Box box = new Box();
+        box.RotateYLeft();
+        box.RotateYLeftInverse();
+        Assert.AreEqual(Face.Side.Front, box.Front().side);
+        Assert.AreEqual(0, box.Front().rotation);
+        Assert.AreEqual(Face.Side.Right, box.Right().side);
+        Assert.AreEqual(Face.Side.Left, box.Left().side);
+        Assert.AreEqual(Face.Side.Top, box.Top().side);
+        Assert.AreEqual(Face.Side.Bottom, box.Bottom().side);
+        Assert.AreEqual(Face.Side.Back, box.Back().side);
+    }
+
+    [Test]
+    /// <summary>
+    /// Tests that RotateZLeftInverse function correctly undoes RotateZLeft
+    /// </summary>
+    public void BoxTest8_RotateLeftZInverse()
+    {
+        Box box = new Box();
+        box.RotateZLeft();
+        box.RotateZLeftInverse();
+        Assert.AreEqual(Face.Side.Front, box.Front().side);
+        Assert.AreEqual(0, box.Front().rotation);
+        Assert.AreEqual(Face.Side.Right, box.Right().side);
+        Assert.AreEqual(Face.Side.Left, box.Left().side);
+        Assert.AreEqual(Face.Side.Top, box.Top().side);
+        Assert.AreEqual(Face.Side.Bottom, box.Bottom().side);
+        Assert.AreEqual(Face.Side.Back, box.Back().side);
+    }
 }

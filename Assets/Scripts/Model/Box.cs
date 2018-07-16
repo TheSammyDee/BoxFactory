@@ -47,6 +47,17 @@ public class Box
         bottom.Rotate(90); 
     }
 
+    public void RotateYLeftInverse()
+    {
+        Face temp = left;
+        left = back;
+        back = right;
+        right = front;
+        front = temp;
+        top.Rotate(90);
+        bottom.Rotate(-90);
+    }
+
     // Rotates the Box counterclockwise facing the forward direction
     public void RotateZLeft()
     {
@@ -61,6 +72,21 @@ public class Box
         left.Rotate(90);
         front.Rotate(90);
         back.Rotate(-90);
+    }
+
+    public void RotateZLeftInverse()
+    {
+        back.Rotate(90);
+        front.Rotate(-90);
+        left.Rotate(-90);
+        Face temp = left;
+        bottom.Rotate(-90);
+        left = bottom;
+        right.Rotate(-90);
+        bottom = right;
+        top.Rotate(-90);
+        right = top;
+        top = temp;
     }
 
     /// <summary>
