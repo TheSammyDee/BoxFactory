@@ -28,6 +28,46 @@ public class PuzzleSolver
         }
     }
 
+    protected class StampPosition
+    {
+        public Face.Side side;
+        private float _orientation;
+        public float orientation
+        {
+            get
+            {
+                return _orientation;
+            }
+            set
+            {
+                _orientation = value;
+                while (_orientation >= 360)
+                {
+                    _orientation -= 360;
+                }
+                while (_orientation < 0)
+                {
+                    _orientation += 360;
+                }
+            }
+        }
+        public bool done;
+
+        public StampPosition(Face.Side side, float orientation)
+        {
+            this.side = side;
+            this.orientation = orientation;
+            done = false;
+        }
+
+        public StampPosition(StampPosition sp)
+        {
+            this.side = sp.side;
+            this.orientation = sp.orientation;
+            this.done = sp.done;
+        }
+    }
+
     public PuzzleSolver()
     {
         nodesToCheck = new List<SolutionNode>();
@@ -40,6 +80,10 @@ public class PuzzleSolver
         {
             solutionTree = BuildSolutionTree();
         }
+
+        List<StampPosition> stampPositions = GetStampPositions(box);
+        List<Box.Command> startingCommand = new List<Box.Command> { Box.Command.Stamp };
+        List<List<Box.Command>> commandChains = GenerateCommandChains(box, stampPositions, startingCommand);
 
         return new List<Box.Command> { Box.Command.Stamp };
     }
@@ -107,6 +151,50 @@ public class PuzzleSolver
         return solutionBranch;
     }
 
+    private List<StampPosition> GetStampPositions(Box box)
+    {
+        List<StampPosition> positions = new List<StampPosition>();
+
+        foreach (Face face in box.faces)
+        {
+            foreach (Stamp stamp in face.stamps)
+            {
+                StampPosition sp = new StampPosition(face.side, -stamp.rotation);
+                positions.Add(sp);
+            }
+        }
+
+        return positions;
+    }
+
+    private List<List<Box.Command>> GenerateCommandChains(StampPosition currentPosition, List<StampPosition> stampPositions, List<Box.Command> commands)
+    {
+        string startingKey = GenerateBoxKey(box);
+        List<List<Box.Command>> commandChains;
+
+        for (int i = 0; i < stampPositions.Count; i++)
+        {
+            string stampKey = GenerateStampPositionKey(stampPositions[i]);
+            List<Box.Command> newCommands = CopyCommandList(commands);
+            List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].inversedCommands;
+            newCommands.AddRange(commandsToAdd);
+            newCommands.Add(Box.Command.Stamp);
+            List<StampPosition> newPositions = CopyStampPositionsList(stampPositions);
+            newPositions.Remove(newPositions[i]);
+
+            Box newBox = new Box(box);
+
+            foreach (Box.Command command in commandsToAdd)
+            {
+                switch (command)
+                {
+                    case Box.Command.Left90Y:
+                        newBox.RotateYLeftInverse();
+                }
+            }
+        }
+    }
+
     protected static List<Box.Command> CopyCommandList(List<Box.Command> list)
     {
         List<Box.Command> newList = new List<Box.Command>();
@@ -119,8 +207,25 @@ public class PuzzleSolver
         return newList;
     }
 
+    protected static List<StampPosition> CopyStampPositionsList(List<StampPosition> list)
+    {
+        List<StampPosition> newList = new List<StampPosition>();
+
+        foreach (StampPosition sp in list)
+        {
+            newList.Add(new StampPosition(sp));
+        }
+
+        return newList;
+    }
+
     private string GenerateBoxKey(Box box)
     {
         return box.Front().side.ToString() + "_" + box.Front().rotation.ToString();
+    }
+
+    private string GenerateStampPositionKey(StampPosition sp)
+    {
+        return sp.side.ToString() + "_" + sp.orientation.ToString();
     }
 }
