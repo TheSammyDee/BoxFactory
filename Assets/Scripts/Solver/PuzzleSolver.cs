@@ -5,25 +5,15 @@ using UnityEngine;
 public class PuzzleSolver
 {
     private Dictionary<string, Dictionary<string, SolutionNode>> solutionTree;
-    private List<SolutionNode> nodesToCheck;
 
     private class SolutionNode
     {
-        public List<Box.Command> inversedCommands;
-        public List<Box.Command> commandChain
-        {
-            get
-            {
-                List<Box.Command> newList = CopyCommandList(inversedCommands);
-                newList.Reverse();
-                return newList;
-            }
-        }
+        public List<Box.Command> commands;
         public Box box;
 
         public SolutionNode(List<Box.Command> commands, Box box)
         {
-            inversedCommands = commands;
+            this.commands = commands;
             this.box = box;
         }
     }
@@ -70,7 +60,6 @@ public class PuzzleSolver
 
     public PuzzleSolver()
     {
-        nodesToCheck = new List<SolutionNode>();
         solutionTree = new Dictionary<string, Dictionary<string, SolutionNode>>();
     }
 
@@ -82,10 +71,12 @@ public class PuzzleSolver
         }
 
         List<StampPosition> stampPositions = GetStampPositions(box);
-        List<Box.Command> startingCommand = new List<Box.Command> { Box.Command.Stamp };
-        List<List<Box.Command>> commandChains = GenerateCommandChains(box, stampPositions, startingCommand);
+        List<Box.Command> startingCommand = new List<Box.Command>();
+        StampPosition startingPosition = new StampPosition(Face.Side.Front, 0);
+        List<List<Box.Command>> commandChains = GenerateCommandChains(startingPosition, stampPositions, startingCommand);
+        commandChains.Sort((x, y) => x.Count.CompareTo(y.Count));
 
-        return new List<Box.Command> { Box.Command.Stamp };
+        return commandChains[0];
     }
 
     private Dictionary<string, Dictionary<string, SolutionNode>> BuildSolutionTree()
@@ -117,6 +108,7 @@ public class PuzzleSolver
     {
         Dictionary<string, SolutionNode> solutionBranch = new Dictionary<string, SolutionNode>();
         SolutionNode firstNode = new SolutionNode(new List<Box.Command>(), box);
+        List<SolutionNode> nodesToCheck = new List<SolutionNode>();
         nodesToCheck.Add(firstNode);
         solutionBranch.Add(GenerateBoxKey(firstNode.box), firstNode);
         for (int i = 0; i < solutionBranch.Count; i++)
@@ -124,11 +116,11 @@ public class PuzzleSolver
             SolutionNode currentNode = nodesToCheck[i];
 
             Box yBox = new Box(currentNode.box);
-            yBox.RotateYLeftInverse();
+            yBox.RotateYLeft();
             string yKey = GenerateBoxKey(yBox);
             if (!solutionBranch.ContainsKey(yKey))
             {
-                List<Box.Command> yCommands = CopyCommandList(currentNode.inversedCommands);
+                List<Box.Command> yCommands = CopyCommandList(currentNode.commands);
                 yCommands.Add(Box.Command.Left90Y);
                 SolutionNode yNode = new SolutionNode(yCommands, yBox);
                 nodesToCheck.Add(yNode);
@@ -136,11 +128,11 @@ public class PuzzleSolver
             }
 
             Box zBox = new Box(currentNode.box);
-            zBox.RotateZLeftInverse();
+            zBox.RotateZLeft();
             string zKey = GenerateBoxKey(zBox);
             if (!solutionBranch.ContainsKey(zKey))
             {
-                List<Box.Command> zCommands = CopyCommandList(currentNode.inversedCommands);
+                List<Box.Command> zCommands = CopyCommandList(currentNode.commands);
                 zCommands.Add(Box.Command.Left90Z);
                 SolutionNode zNode = new SolutionNode(zCommands, zBox);
                 nodesToCheck.Add(zNode);
@@ -169,30 +161,30 @@ public class PuzzleSolver
 
     private List<List<Box.Command>> GenerateCommandChains(StampPosition currentPosition, List<StampPosition> stampPositions, List<Box.Command> commands)
     {
-        string startingKey = GenerateBoxKey(box);
-        List<List<Box.Command>> commandChains;
+        string startingKey = GenerateStampPositionKey(currentPosition);
+        List<List<Box.Command>> commandChains = new List<List<Box.Command>>();
 
         for (int i = 0; i < stampPositions.Count; i++)
         {
             string stampKey = GenerateStampPositionKey(stampPositions[i]);
             List<Box.Command> newCommands = CopyCommandList(commands);
-            List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].inversedCommands;
+            List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].commands;
             newCommands.AddRange(commandsToAdd);
             newCommands.Add(Box.Command.Stamp);
+
+            if (stampPositions.Count == 1)
+            {
+                commandChains.Add(newCommands);
+                return commandChains;
+            }
+
             List<StampPosition> newPositions = CopyStampPositionsList(stampPositions);
             newPositions.Remove(newPositions[i]);
 
-            Box newBox = new Box(box);
-
-            foreach (Box.Command command in commandsToAdd)
-            {
-                switch (command)
-                {
-                    case Box.Command.Left90Y:
-                        newBox.RotateYLeftInverse();
-                }
-            }
+            commandChains.AddRange(GenerateCommandChains(stampPositions[i], newPositions, newCommands));
         }
+
+        return commandChains;
     }
 
     protected static List<Box.Command> CopyCommandList(List<Box.Command> list)
