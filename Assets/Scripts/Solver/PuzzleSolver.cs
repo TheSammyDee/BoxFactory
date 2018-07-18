@@ -6,6 +6,10 @@ public class PuzzleSolver
 {
     private Dictionary<string, Dictionary<string, SolutionNode>> solutionTree;
 
+    /// <summary>
+    /// Represents a solution end point of the given <see cref="Box"/> and the <see cref="Box.Command"/>s 
+    /// required to reach that Box configuration
+    /// </summary>
     private class SolutionNode
     {
         public List<Box.Command> commands;
@@ -18,6 +22,10 @@ public class PuzzleSolver
         }
     }
 
+    /// <summary>
+    /// Represents the positioning of a <see cref="Stamp"/> by the <see cref="Face.Side"/>
+    /// it is on, and the rotation of the <see cref="Face"/> needs to be in to apply the Stamp
+    /// </summary>
     protected class StampPosition
     {
         public Face.Side side;
@@ -41,44 +49,46 @@ public class PuzzleSolver
                 }
             }
         }
-        public bool done;
 
         public StampPosition(Face.Side side, float orientation)
         {
             this.side = side;
             this.orientation = orientation;
-            done = false;
         }
 
         public StampPosition(StampPosition sp)
         {
             this.side = sp.side;
             this.orientation = sp.orientation;
-            this.done = sp.done;
         }
     }
 
     public PuzzleSolver()
     {
-        solutionTree = new Dictionary<string, Dictionary<string, SolutionNode>>();
+        solutionTree = BuildSolutionTree();
     }
 
+    /// <summary>
+    /// Finds the shortest possible list of <see cref="Box.Command"/>s to recreate
+    /// the given <see cref="Box"/>
+    /// </summary>
+    /// <param name="box"></param>
+    /// <returns></returns>
     public List<Box.Command> Solve(Box box)
     {
-        if (solutionTree.Count == 0)
-        {
-            solutionTree = BuildSolutionTree();
-        }
-
         List<StampPosition> stampPositions = GetStampPositions(box);
-        List<Box.Command> startingCommand = new List<Box.Command>();
         StampPosition startingPosition = new StampPosition(Face.Side.Front, 0);
-        List<List<Box.Command>> commandChains = GenerateCommandChains(startingPosition, stampPositions, startingCommand);
+        List<List<Box.Command>> commandChains = GenerateCommandChains(startingPosition, stampPositions, new List<Box.Command>());
         commandChains.Sort((x, y) => x.Count.CompareTo(y.Count));
 
         return commandChains[0];
     }
 
+    /// <summary>
+    /// Calculates the shortest list of <see cref="Box.Command"/>s needed to reach each <see cref="Face"/>
+    /// of a <see cref="Box"/> in each orientation, from each Face in each orientation
+    /// </summary>
+    /// <returns></returns>
     private Dictionary<string, Dictionary<string, SolutionNode>> BuildSolutionTree()
     {
         Dictionary<string, Dictionary<string, SolutionNode>> tree = new Dictionary<string, Dictionary<string, SolutionNode>>();
@@ -104,13 +114,24 @@ public class PuzzleSolver
         return tree;
     }
 
+    /// <summary>
+    /// Calculates the shortest list of <see cref="Box.Command"/>s needed to reach each <see cref="Face"/>
+    /// of a <see cref="Box"/> in each orientation starting from the configuration of the given Box
+    /// </summary>
+    /// <param name="box"></param>
+    /// <returns></returns>
     private Dictionary<string, SolutionNode> BuildSolutionBranch(Box box)
     {
+        // Create the first node for 0 moves, the starting position
         Dictionary<string, SolutionNode> solutionBranch = new Dictionary<string, SolutionNode>();
         SolutionNode firstNode = new SolutionNode(new List<Box.Command>(), box);
         List<SolutionNode> nodesToCheck = new List<SolutionNode>();
         nodesToCheck.Add(firstNode);
         solutionBranch.Add(GenerateBoxKey(firstNode.box), firstNode);
+
+        // As each Box configuration is first reached, it is added to the solutionBranch.
+        // Use each reached configuration as a new starting point in turn.
+        // Once all configurations have been reached once, the branch is complete
         for (int i = 0; i < solutionBranch.Count; i++)
         {
             SolutionNode currentNode = nodesToCheck[i];
