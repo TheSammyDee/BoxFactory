@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public class Box
 {
@@ -84,6 +85,30 @@ public class Box
             }
         }
         front.stamps.Add(stamp);
+        return true;
+    }
+
+    public bool Compare(Box box)
+    {
+        for (int i = 0; i < box.faces.Count; i++)
+        {
+            if (box.faces[i].stamps.Count != faces[i].stamps.Count)
+            {
+                return false;
+            }
+
+            List<Stamp> boxStamps = box.faces[i].stamps.OrderBy(x => x.rotation).ToList();
+            List<Stamp> theseStamps = faces[i].stamps.OrderBy(x => x.rotation).ToList();
+
+            for (int j = 0; j < boxStamps.Count; j++)
+            {
+                if (boxStamps[j].rotation != theseStamps[j].rotation)
+                {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

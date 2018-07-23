@@ -9,17 +9,15 @@ public class Game : MonoBehaviour {
     public VisualBox boxView3D;
 
     public bool viewIs2D;
-    public Text resultText;
     public Text commandList;
-    public Button doneButton;
-    public Button resetButton;
-    public Button resultButton;
-    public Button goalButton;
     public Text boxTypeButtonText;
+    public GameObject puzzlePanel;
+    public ResultsPanel resultsPanel;
+    public Button boxTypeButton;
 
     public BoxViewer boxViewer;
 
-    private Box solutionBox;
+    private Solution solution;
     private Box playerBox;
     private Box showingBox;
     private VisualBox boxView;
@@ -33,31 +31,13 @@ public class Game : MonoBehaviour {
     {
         solutionFactory = new SolutionFactory();
         solved = false;
-        solutionBox = solutionFactory.CreatePuzzle();
-        showingBox = solutionBox;
+        solution = solutionFactory.CreateSolution();
+        showingBox = solution.box;
         Set2DBoxView(viewIs2D);
         animationCommands = new List<Box.Command>();
         animator = new GameObject("Box Animator").AddComponent<BoxAnimator>();
         ResetGame();	
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-    private Box CreateSolution()
-    {
-        Box box = new Box();
-        box.RotateZLeft();
-        box.Stamp();
-        box.RotateYLeft();
-        box.RotateYLeft();
-        box.RotateZLeft();
-        box.Stamp();
-
-        return box;
-    }
 
     public void ToggleBoxView()
     {
@@ -98,6 +78,7 @@ public class Game : MonoBehaviour {
     public void Done()
     {
         ActivateButtons(false);
+        puzzlePanel.SetActive(false);
         viewIs2D = false;
         Set2DBoxView(viewIs2D);
         boxViewer.ResetView();
@@ -106,95 +87,51 @@ public class Game : MonoBehaviour {
 
     private void ActivateButtons(bool value)
     {
-        Button[] buttons = FindObjectsOfType<Button>();
-        foreach (Button button in buttons)
-        {
-            button.interactable = value;
-        }
+        boxTypeButton.interactable = value;
     }
 
     private void OnFinishDoneAnimation()
     {
         ActivateButtons(true);
 
-        solved = CompareToSolution(playerBox);
+        solved = playerBox.Compare(solution.box);
 
-        if (solved)
-        {
-            resultText.text = "Correct";
-        }
-        else
-        {
-            resultText.text = "Nope"; 
-        }
+        resultsPanel.Show(solved, solution.score);
 
         boxViewer.ResetView();
         boxView.ApplyBox(playerBox);
-
-        doneButton.gameObject.SetActive(false);
-        resetButton.gameObject.SetActive(true);
-        resultButton.gameObject.SetActive(true);
-        goalButton.gameObject.SetActive(true);
     }
 
     public void ShowResult()
     {
         showingBox = playerBox;
         boxView.ApplyBox(showingBox);
-        resultButton.interactable = false;
-        goalButton.interactable = true;
+        resultsPanel.ShowResult();
     }
 
     public void ShowGoal()
     {
-        showingBox = solutionBox;
+        showingBox = solution.box;
         boxView.ApplyBox(showingBox);
-        goalButton.interactable = false;
-        resultButton.interactable = true;
+        resultsPanel.ShowGoal();
+    }
+
+    public void NextPuzzle()
+    {
+        solution = solutionFactory.CreateSolution();
+        ResetGame();
     }
 
     public void ResetGame()
     {
-        if (solved)
-        {
-            solutionBox = solutionFactory.CreatePuzzle();
-            solved = false;
-        }
+        resultsPanel.gameObject.SetActive(false);
+        puzzlePanel.SetActive(true);
 
-        resultText.text = "";
-        showingBox = solutionBox;
+        showingBox = solution.box;
         boxView.ApplyBox(showingBox);
         commandList.text = "";
         playerBox = new Box();
         boxViewer.ResetView();
         animationCommands.Clear();
-
-        doneButton.gameObject.SetActive(true);
-        resetButton.gameObject.SetActive(false);
-        resultButton.interactable = false;
-        resultButton.gameObject.SetActive(false);
-        goalButton.gameObject.SetActive(false);
-        goalButton.interactable = true;
-    }
-
-    private bool CompareToSolution(Box box)
-    {
-        for (int i = 0; i < box.faces.Count; i++)
-        {
-            if (box.faces[i].stamps.Count != solutionBox.faces[i].stamps.Count)
-            {
-                return false;
-            }
-            for (int j = 0; j < box.faces[i].stamps.Count; j++)
-            {
-                // TODO: Account for stamps in different order on same face
-                if (box.faces[i].stamps[j].rotation != solutionBox.faces[i].stamps[j].rotation)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 }

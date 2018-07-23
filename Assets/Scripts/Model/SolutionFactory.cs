@@ -8,10 +8,14 @@ public class SolutionFactory
 
     private float stampChance;
     private int stampCount;
+    private PuzzleSolver solver;
 
-    public SolutionFactory() { }
+    public SolutionFactory()
+    {
+        solver = new PuzzleSolver();
+    }
 
-    public Box CreatePuzzle()
+    public Solution CreateSolution()
     {
         ResetVariables();
 
@@ -43,7 +47,11 @@ public class SolutionFactory
             }
         }
 
-        return box;
+        List<Box.Command> solutionCommands = solver.Solve(box);
+
+        Solution solution = new Solution(box, solutionCommands);
+
+        return solution;
     }
 
     private void ResetVariables()
