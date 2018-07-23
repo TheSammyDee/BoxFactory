@@ -1076,6 +1076,8 @@ MonoBehaviour:
   right: {fileID: 478100024}
   stampImage: {fileID: 114804044632719916, guid: dc5f3df13228a534f806f2764127c9d7,
     type: 2}
+  stampTemplateImage: {fileID: 114640558529007002, guid: 0410c99b29036bc44b5b6df390172d2e,
+    type: 2}
 --- !u!1 &919291606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1643,15 +1645,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1609038592828314, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
-      propertyPath: m_Name
-      value: 3D Box
-      objectReference: {fileID: 0}
-    - target: {fileID: 23378094352989052, guid: cb43c22f8ebdbca45bd724efbccdb48c,
-        type: 2}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: e05d5fb7688d0ce4da73b7a17961dda8, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: cb43c22f8ebdbca45bd724efbccdb48c, type: 2}
   m_IsPrefabParent: 0

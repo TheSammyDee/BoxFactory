@@ -128,6 +128,5 @@ public class BoxAnimator : MonoBehaviour
         animating = true;
 
         box = new Box();
-        visualBox.Clear();
     }
 }

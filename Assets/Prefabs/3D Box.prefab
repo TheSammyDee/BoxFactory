@@ -263,7 +263,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e05d5fb7688d0ce4da73b7a17961dda8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -375,4 +375,6 @@ MonoBehaviour:
   left: {fileID: 1290203434558676}
   right: {fileID: 1025409425472942}
   stampPrefab: {fileID: 1195200821255318, guid: cd1a7dadf059b4a4ab55dce8e3832db7,
+    type: 2}
+  stampTemplatePrefab: {fileID: 1423301538791284, guid: 19114b79e77ecf54880b90bfaa8829b7,
     type: 2}

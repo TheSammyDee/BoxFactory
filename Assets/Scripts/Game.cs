@@ -50,7 +50,7 @@ public class Game : MonoBehaviour {
         boxView = value ? boxView2D : boxView3D;
         boxViewer.ShowBox(!value);
         boxView2D.gameObject.SetActive(value);
-        boxView.ApplyBox(showingBox);
+        boxView.ApplyBox(showingBox, !solved);
         boxTypeButtonText.text = value ? "3D" : "2D";
     }
 
@@ -112,7 +112,7 @@ public class Game : MonoBehaviour {
     public void ShowGoal()
     {
         showingBox = solution.box;
-        boxView.ApplyBox(showingBox);
+        boxView.ApplyBox(showingBox, true);
         resultsPanel.ShowGoal();
     }
 
@@ -128,7 +128,7 @@ public class Game : MonoBehaviour {
         puzzlePanel.SetActive(true);
 
         showingBox = solution.box;
-        boxView.ApplyBox(showingBox);
+        boxView.ApplyBox(showingBox, true);
         commandList.text = "";
         playerBox = new Box();
         boxViewer.ResetView();

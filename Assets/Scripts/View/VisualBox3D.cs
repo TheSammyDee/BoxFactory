@@ -12,7 +12,8 @@ public class VisualBox3D : VisualBox {
     public GameObject left;
     public GameObject right;
 
-    public GameObject stampPrefab; 
+    public GameObject stampPrefab;
+    public GameObject stampTemplatePrefab;
 
     private List<GameObject> stampObjects;
     private Dictionary<Face.Side, GameObject> faces; 
@@ -30,7 +31,7 @@ public class VisualBox3D : VisualBox {
         stampObjects = new List<GameObject>();
     }
 
-    public override void ApplyBox(Box box)
+    public override void ApplyBox(Box box, bool isTemplate = false)
     {
         Clear();
         foreach (Face face in box.faces)
@@ -39,9 +40,11 @@ public class VisualBox3D : VisualBox {
             {
                 GameObject currentFace = faces[face.side];
 
+                GameObject prefab = isTemplate ? stampTemplatePrefab : stampPrefab;
+
                 foreach (Stamp stamp in face.stamps)
                 {
-                    GameObject go = GameObject.Instantiate<GameObject>(stampPrefab);
+                    GameObject go = GameObject.Instantiate<GameObject>(prefab);
                     go.transform.SetParent(currentFace.transform, false);
                     go.transform.Rotate(Vector3.down, stamp.rotation);
                     stampObjects.Add(go);

@@ -14,6 +14,7 @@ public class VisualBox2D : VisualBox {
     public Image right;
 
     public Image stampImage;
+    public Image stampTemplateImage;
 
     private List<Image> stampImages;
 
@@ -32,7 +33,7 @@ public class VisualBox2D : VisualBox {
         stampImages = new List<Image>();
     }
 
-    public override void ApplyBox(Box box)
+    public override void ApplyBox(Box box, bool isTemplate = false)
     {
         Clear();
         foreach (Face face in box.faces)
@@ -41,9 +42,11 @@ public class VisualBox2D : VisualBox {
             {
                 Image currentFace = faces[face.side];
 
+                Image image = isTemplate ? stampTemplateImage : stampImage;
+
                 foreach (Stamp stamp in face.stamps)
                 {
-                    Image s = GameObject.Instantiate<Image>(stampImage);
+                    Image s = GameObject.Instantiate<Image>(image);
                     s.transform.SetParent(currentFace.transform);
                     s.transform.position = currentFace.transform.position;
                     s.transform.Rotate(Vector3.forward, stamp.rotation);
