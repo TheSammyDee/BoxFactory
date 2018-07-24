@@ -10,6 +10,7 @@ public class BoxAnimator : MonoBehaviour
 
     private Transform boxTransform;
     private VisualBox visualBox;
+    private VisualBox invisiBox;
     private Box box;
 
     private float pauseTimer;
@@ -21,12 +22,30 @@ public class BoxAnimator : MonoBehaviour
     private float rotationGoal;
     private Vector3 rotationAxis;
 
-    private UnityAction FinishAnimation;
+    private UnityAction OnFinishAnimation;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
+    public void Initialize(VisualBox invisiBoxPrefab)
+    {
+        invisiBox = GameObject.Instantiate(invisiBoxPrefab);
+    }
+
+    public void AnimateBox(Transform boxViewTransform, List<Box.Command> commands, UnityAction onFinishAnimation)
+    {
+        boxTransform = boxViewTransform;
+        boxTransform.localRotation = Quaternion.identity;
+        invisiBox.transform.SetParent(boxTransform, false);
+        invisiBox.transform.localPosition = Vector3.zero;
+        invisiBox.transform.localRotation = Quaternion.identity;
+        invisiBox.transform.localScale = Vector3.one;
+        OnFinishAnimation = onFinishAnimation;
+        animationCommands = commands;
+        commandNum = 0;
+        pauseTimer = 0f;
+        paused = true;
+        animating = true;
+
+        box = new Box();
+    }
 
     private void Update()
     {
@@ -58,7 +77,7 @@ public class BoxAnimator : MonoBehaviour
             {
                 if (animationCommands[commandNum] == Box.Command.Stamp)
                 {
-                    visualBox.ApplyBox(box);
+                    invisiBox.ApplyBox(box);
                     commandNum++;
                     paused = true;
                 }
@@ -114,19 +133,12 @@ public class BoxAnimator : MonoBehaviour
         }
     }
 
-    public void AnimateBox(Transform boxTransform, VisualBox visualBox, List<Box.Command> commands, UnityAction onFinishAnimation)
+    private void FinishAnimation()
     {
-        this.boxTransform = boxTransform;
-        this.visualBox = visualBox;
+        invisiBox.Clear();
+        invisiBox.transform.SetParent(null);
 
-        this.boxTransform.localRotation = Quaternion.identity;
-        FinishAnimation = onFinishAnimation;
-        animationCommands = commands;
-        commandNum = 0;
-        pauseTimer = 0f;
-        paused = true;
-        animating = true;
-
-        box = new Box();
+        if (OnFinishAnimation != null)
+            OnFinishAnimation();
     }
 }

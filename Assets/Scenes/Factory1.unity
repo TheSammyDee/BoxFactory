@@ -1360,6 +1360,12 @@ Prefab:
       propertyPath: resultsPanel
       value: 
       objectReference: {fileID: 1070643352}
+    - target: {fileID: 114783121775013200, guid: fe7de96958c63844b92c261d6fe857fd,
+        type: 2}
+      propertyPath: invisiBoxPrefab
+      value: 
+      objectReference: {fileID: 114879740763171734, guid: 897c18622ab2c0d4e9e3d3c48f151a47,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fe7de96958c63844b92c261d6fe857fd, type: 2}
   m_IsPrefabParent: 0

@@ -7,6 +7,7 @@ public class Game : MonoBehaviour {
 
     public VisualBox boxView2D;
     public VisualBox boxView3D;
+    public VisualBox invisiBoxPrefab;
 
     public bool viewIs2D;
     public Text commandList;
@@ -24,20 +25,23 @@ public class Game : MonoBehaviour {
     private List<Box.Command> animationCommands;
     private BoxAnimator animator;
     private SolutionFactory solutionFactory;
-    private bool solved;
+
+    private bool solved = false;
+    private bool viewingResults = false;
+    private bool showingGoal = false;
 
 	// Use this for initialization
 	void Start ()
     {
         solutionFactory = new SolutionFactory();
-        solved = false;
         solution = solutionFactory.CreateSolution();
         showingBox = solution.box;
         Set2DBoxView(viewIs2D);
         animationCommands = new List<Box.Command>();
         animator = new GameObject("Box Animator").AddComponent<BoxAnimator>();
-        ResetGame();	
-	}
+        animator.Initialize(invisiBoxPrefab);
+        ResetGame();
+    }
 
     public void ToggleBoxView()
     {
@@ -50,7 +54,8 @@ public class Game : MonoBehaviour {
         boxView = value ? boxView2D : boxView3D;
         boxViewer.ShowBox(!value);
         boxView2D.gameObject.SetActive(value);
-        boxView.ApplyBox(showingBox, !solved);
+        bool isTemplate = !viewingResults || showingGoal;
+        boxView.ApplyBox(showingBox, isTemplate);
         boxTypeButtonText.text = value ? "3D" : "2D";
     }
 
@@ -82,7 +87,7 @@ public class Game : MonoBehaviour {
         viewIs2D = false;
         Set2DBoxView(viewIs2D);
         boxViewer.ResetView();
-        animator.AnimateBox(boxView.transform, boxView, animationCommands, OnFinishDoneAnimation);
+        animator.AnimateBox(boxView.transform, animationCommands, OnFinishDoneAnimation);
     }
 
     private void ActivateButtons(bool value)
@@ -95,11 +100,12 @@ public class Game : MonoBehaviour {
         ActivateButtons(true);
 
         solved = playerBox.Compare(solution.box);
+        viewingResults = true;
 
         resultsPanel.Show(solved, solution.score);
 
         boxViewer.ResetView();
-        boxView.ApplyBox(playerBox);
+        ShowResult();
     }
 
     public void ShowResult()
@@ -107,6 +113,7 @@ public class Game : MonoBehaviour {
         showingBox = playerBox;
         boxView.ApplyBox(showingBox);
         resultsPanel.ShowResult();
+        showingGoal = false;
     }
 
     public void ShowGoal()
@@ -114,6 +121,7 @@ public class Game : MonoBehaviour {
         showingBox = solution.box;
         boxView.ApplyBox(showingBox, true);
         resultsPanel.ShowGoal();
+        showingGoal = true;
     }
 
     public void NextPuzzle()
@@ -126,6 +134,10 @@ public class Game : MonoBehaviour {
     {
         resultsPanel.gameObject.SetActive(false);
         puzzlePanel.SetActive(true);
+
+        solved = false;
+        viewingResults = false;
+        showingGoal = false;
 
         showingBox = solution.box;
         boxView.ApplyBox(showingBox, true);
