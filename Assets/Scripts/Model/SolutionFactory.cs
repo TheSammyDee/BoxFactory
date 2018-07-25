@@ -10,18 +10,24 @@ public class SolutionFactory
     private int stampCount;
     private PuzzleSolver solver;
 
+    private const int LEVEL_MULTIPLIER = 3;
+
     public SolutionFactory()
     {
         solver = new PuzzleSolver();
     }
 
-    public Solution CreateSolution()
+    public Solution CreateSolution(int level)
     {
         ResetVariables();
+        int maxMoves = LEVEL_MULTIPLIER * level;
+        int minMoves = maxMoves - LEVEL_MULTIPLIER + 1;
 
         Box box = new Box();
-        
-        while (stampCount < 2)
+        List<Box.Command> solutionCommands = new List<Box.Command>();
+
+
+        while (solutionCommands.Count < minMoves)
         {
             float rand = Random.value;
             if (rand < stampChance)
@@ -30,6 +36,14 @@ public class SolutionFactory
                 {
                     stampCount++;
                     stampChance = STAMP_INCREMENT;
+
+                    solutionCommands = solver.Solve(box);
+                    if (solutionCommands.Count > maxMoves)
+                    {
+                        ResetVariables();
+                        box = new Box();
+                        solutionCommands.Clear();
+                    }
                 }
             }
             else
@@ -46,8 +60,6 @@ public class SolutionFactory
                 box.RotateZLeft();
             }
         }
-
-        List<Box.Command> solutionCommands = solver.Solve(box);
 
         Solution solution = new Solution(box, solutionCommands);
 

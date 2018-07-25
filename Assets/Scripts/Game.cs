@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class Game : MonoBehaviour {
 
+    [SerializeField]
+    int difficultyLevel = 1;
+
+    // TODO: clean up public fields to SerializedFields
     public VisualBox boxView2D;
     public VisualBox boxView3D;
     public VisualBox invisiBoxPrefab;
@@ -34,7 +38,7 @@ public class Game : MonoBehaviour {
 	void Start ()
     {
         solutionFactory = new SolutionFactory();
-        solution = solutionFactory.CreateSolution();
+        solution = solutionFactory.CreateSolution(difficultyLevel);
         showingBox = solution.box;
         Set2DBoxView(viewIs2D);
         animationCommands = new List<Box.Command>();
@@ -126,7 +130,7 @@ public class Game : MonoBehaviour {
 
     public void NextPuzzle()
     {
-        solution = solutionFactory.CreateSolution();
+        solution = solutionFactory.CreateSolution(difficultyLevel);
         ResetGame();
     }
 
