@@ -34,7 +34,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1886256969321618}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 594.38727, y: 1023.7124, z: 0.10732192}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -51,14 +51,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9647015bd074da64c9c2284a87ca9a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unfoldedBoxView: {fileID: 0}
-  foldedBoxView: {fileID: 0}
-  flatViewOn: 0
-  resultText: {fileID: 0}
+  difficultyLevel: 2
+  boxView2D: {fileID: 0}
+  boxView3D: {fileID: 0}
+  invisiBoxPrefab: {fileID: 114879740763171734, guid: 897c18622ab2c0d4e9e3d3c48f151a47,
+    type: 2}
+  viewIs2D: 0
   commandList: {fileID: 0}
-  doneButton: {fileID: 0}
-  resetButton: {fileID: 0}
-  resultButton: {fileID: 0}
-  goalButton: {fileID: 0}
   boxTypeButtonText: {fileID: 0}
+  puzzlePanel: {fileID: 0}
+  resultsPanel: {fileID: 0}
+  boxTypeButton: {fileID: 0}
+  levelText: {fileID: 0}
   boxViewer: {fileID: 0}

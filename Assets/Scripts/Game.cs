@@ -19,6 +19,7 @@ public class Game : MonoBehaviour {
     public GameObject puzzlePanel;
     public ResultsPanel resultsPanel;
     public Button boxTypeButton;
+    public Text levelText;
 
     public BoxViewer boxViewer;
 
@@ -45,6 +46,23 @@ public class Game : MonoBehaviour {
         animator = new GameObject("Box Animator").AddComponent<BoxAnimator>();
         animator.Initialize(invisiBoxPrefab);
         ResetGame();
+    }
+
+    public void ResetGame()
+    {
+        resultsPanel.gameObject.SetActive(false);
+        puzzlePanel.SetActive(true);
+
+        solved = false;
+        viewingResults = false;
+        showingGoal = false;
+
+        showingBox = solution.box;
+        boxView.ApplyBox(showingBox, true);
+        commandList.text = "";
+        playerBox = new Box();
+        boxViewer.ResetView();
+        animationCommands.Clear();
     }
 
     public void ToggleBoxView()
@@ -134,20 +152,19 @@ public class Game : MonoBehaviour {
         ResetGame();
     }
 
-    public void ResetGame()
+    
+
+    public void IncreaseDifficultyLevel()
     {
-        resultsPanel.gameObject.SetActive(false);
-        puzzlePanel.SetActive(true);
+        Debug.Log("diff up");
+        difficultyLevel++;
+        levelText.text = difficultyLevel.ToString();
+    }
 
-        solved = false;
-        viewingResults = false;
-        showingGoal = false;
-
-        showingBox = solution.box;
-        boxView.ApplyBox(showingBox, true);
-        commandList.text = "";
-        playerBox = new Box();
-        boxViewer.ResetView();
-        animationCommands.Clear();
+    public void DecreaseDifficultyLevel()
+    {
+        Debug.Log("diff down");
+        difficultyLevel--;
+        levelText.text = difficultyLevel.ToString();
     }
 }

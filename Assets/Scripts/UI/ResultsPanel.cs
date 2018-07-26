@@ -33,7 +33,6 @@ public class ResultsPanel : MonoBehaviour {
         }
 
         resultText.text = result + "\nPerfect score: " + perfectScore;
-        nextButton.gameObject.SetActive(solved);
     }
 
     public void ShowResult()
