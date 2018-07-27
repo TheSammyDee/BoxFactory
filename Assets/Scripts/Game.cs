@@ -156,14 +156,12 @@ public class Game : MonoBehaviour {
 
     public void IncreaseDifficultyLevel()
     {
-        Debug.Log("diff up");
         difficultyLevel++;
         levelText.text = difficultyLevel.ToString();
     }
 
     public void DecreaseDifficultyLevel()
     {
-        Debug.Log("diff down");
         difficultyLevel--;
         levelText.text = difficultyLevel.ToString();
     }
