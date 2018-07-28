@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class SolutionFactory
 {
-    private const float STAMP_INCREMENT = 1f / 6f;
-
     private float stampChance;
     private int stampCount;
     private PuzzleSolver solver;
-
-    private const int LEVEL_MULTIPLIER = 3;
 
     public SolutionFactory()
     {
@@ -20,8 +16,8 @@ public class SolutionFactory
     public Solution CreateSolution(int level)
     {
         ResetVariables();
-        int maxMoves = LEVEL_MULTIPLIER * level;
-        int minMoves = maxMoves - LEVEL_MULTIPLIER + 1;
+        int maxMoves = Config.Instance.SolutionCreationLevelMultiplier * level;
+        int minMoves = maxMoves - Config.Instance.SolutionCreationLevelMultiplier + 1;
 
         Box box = new Box();
         List<Box.Command> solutionCommands = new List<Box.Command>();
@@ -35,7 +31,7 @@ public class SolutionFactory
                 if (box.Stamp())
                 {
                     stampCount++;
-                    stampChance = STAMP_INCREMENT;
+                    stampChance = Config.Instance.SolutionCreationStampIncrement;
 
                     solutionCommands = solver.Solve(box);
                     if (solutionCommands.Count > maxMoves)
@@ -48,7 +44,7 @@ public class SolutionFactory
             }
             else
             {
-                stampChance += STAMP_INCREMENT;
+                stampChance += Config.Instance.SolutionCreationStampIncrement;
             }
             rand = Random.value;
             if (rand > 0.5)
@@ -68,7 +64,7 @@ public class SolutionFactory
 
     private void ResetVariables()
     {
-        stampChance = STAMP_INCREMENT;
+        stampChance = Config.Instance.SolutionCreationStampIncrement;
         stampCount = 0;
     }
 }

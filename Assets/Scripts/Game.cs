@@ -6,9 +6,11 @@ using UnityEngine.UI;
 public class Game : MonoBehaviour {
 
     [SerializeField]
-    int difficultyLevel = 1;
+    private int difficultyLevel = 1;
 
     // TODO: clean up public fields to SerializedFields
+    [SerializeField]
+    private Config configPrefab;
     public VisualBox boxView2D;
     public VisualBox boxView3D;
     public VisualBox invisiBoxPrefab;
@@ -38,6 +40,8 @@ public class Game : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        GameObject.Instantiate(configPrefab);
+        difficultyLevel = Config.Instance.StartingDifficultyLevel;
         solutionFactory = new SolutionFactory();
         solution = solutionFactory.CreateSolution(difficultyLevel);
         showingBox = solution.box;
@@ -132,6 +136,7 @@ public class Game : MonoBehaviour {
 
     public void ShowResult()
     {
+        levelText.text = difficultyLevel.ToString();
         showingBox = playerBox;
         boxView.ApplyBox(showingBox);
         resultsPanel.ShowResult();
@@ -151,8 +156,6 @@ public class Game : MonoBehaviour {
         solution = solutionFactory.CreateSolution(difficultyLevel);
         ResetGame();
     }
-
-    
 
     public void IncreaseDifficultyLevel()
     {

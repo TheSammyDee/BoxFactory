@@ -5,9 +5,6 @@ using UnityEngine.Events;
 
 public class BoxAnimator : MonoBehaviour
 {
-    private const float PAUSE_TIME = 0.7f;
-    private const int ROTATION_SPEED = 90;
-
     private Transform boxTransform;
     private VisualBox visualBox;
     private VisualBox invisiBox;
@@ -53,7 +50,7 @@ public class BoxAnimator : MonoBehaviour
         {
             if (paused)
             {
-                if (pauseTimer >= PAUSE_TIME)
+                if (pauseTimer >= Config.Instance.AnimationPauseTime)
                 {
                     paused = false;
                     pauseTimer = 0;
@@ -112,7 +109,7 @@ public class BoxAnimator : MonoBehaviour
 
     private void AnimateRotation()
     {
-        float rotationAmount = ROTATION_SPEED * Time.deltaTime;
+        float rotationAmount = Config.Instance.AnimationRotationSpeed * Time.deltaTime;
         boxTransform.Rotate(rotationAxis, rotationAmount);
         rotationCounter += rotationAmount;
 

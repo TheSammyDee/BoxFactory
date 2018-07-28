@@ -1691,6 +1691,12 @@ Prefab:
       propertyPath: difficultyLevel
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114783121775013200, guid: fe7de96958c63844b92c261d6fe857fd,
+        type: 2}
+      propertyPath: configPrefab
+      value: 
+      objectReference: {fileID: 114655045657803840, guid: 09cc39e6d627d1743a9f33633b0bb427,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fe7de96958c63844b92c261d6fe857fd, type: 2}
   m_IsPrefabParent: 0
