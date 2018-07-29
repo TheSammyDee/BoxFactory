@@ -128,7 +128,7 @@ public class Game : MonoBehaviour {
         solved = playerBox.Compare(solution.box);
         viewingResults = true;
 
-        resultsPanel.Show(solved, solution.score);
+        resultsPanel.Show(solved, solution.score, animationCommands.Count);
 
         boxViewer.ResetView();
         ShowResult();

@@ -17,7 +17,7 @@ public class ResultsPanel : MonoBehaviour {
     [SerializeField]
     Button goalButton;
 
-    public void Show(bool solved, int perfectScore)
+    public void Show(bool solved, int perfectScore, int playerScore)
     {
         gameObject.SetActive(true);
 
@@ -32,7 +32,7 @@ public class ResultsPanel : MonoBehaviour {
             result = "Nope";
         }
 
-        resultText.text = result + "\nPerfect score: " + perfectScore;
+        resultText.text = result + "\nPerfect score: " + perfectScore + "\nYour score: " + playerScore;
     }
 
     public void ShowResult()
