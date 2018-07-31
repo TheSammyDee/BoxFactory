@@ -1,0 +1,29 @@
+fileFormatVersion: 2
+guid: e22f0e04f49e99f41a5c5e8c44d38e06
+timeCreated: 1532990517
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Kleptocracy Titling
+  fontNames:
+  - Kleptocracy Titling
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a2911b32ae3223244bf610780f2c0404, type: 3}
+  - {fileID: 12800000, guid: 7be184423589d6c4eafad1ee3e63d48f, type: 3}
+  - {fileID: 12800000, guid: 99314862612e4fc4db60213c12647d57, type: 3}
+  - {fileID: 12800000, guid: 06fc2724d616aa14488e8b44d17f2687, type: 3}
+  - {fileID: 12800000, guid: 876a8534cfc79514bb729e95cbf3621f, type: 3}
+  - {fileID: 12800000, guid: e1be9a4a1330d8d49910489e6128c14d, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
