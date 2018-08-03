@@ -7,11 +7,6 @@ public class BoxCamRotator : MonoBehaviour
     [SerializeField]
     GameObject yRotationGimbal;
 
-    private float maxRotY = 155;
-    private float maxRotX = 50;
-
-    private const float ROT_X_START = 0;
-    private const float ROT_Y_START = 20;
     private float rotX;
     private float rotY;
     private Vector3 defaultXRot;
@@ -19,8 +14,8 @@ public class BoxCamRotator : MonoBehaviour
 
     private void Start()
     {
-        defaultXRot = new Vector3(ROT_X_START, -ROT_Y_START, 0);
-        defaultYRot = new Vector3(0, ROT_Y_START, 0);
+        defaultXRot = new Vector3(Config.Instance.BoxCamRotStartX, -Config.Instance.BoxCamRotStartY, 0);
+        defaultYRot = new Vector3(0, Config.Instance.BoxCamRotStartY, 0);
         ResetView();
     }
 
@@ -29,16 +24,23 @@ public class BoxCamRotator : MonoBehaviour
         rotY += delta.x;
         rotX += delta.y;
 
-        if (Mathf.Abs(rotY) > maxRotY)
+        if (Mathf.Abs(rotY) > Config.Instance.BoxCamMaxRotY)
         {
-            rotY = rotY > 0 ? maxRotY : -maxRotY;
-        }
-        if (Mathf.Abs(rotX) > maxRotX)
-        {
-            rotX = rotX > 0 ? maxRotX : -maxRotX;
+            rotY = rotY > 0 ? Config.Instance.BoxCamMaxRotY : -Config.Instance.BoxCamMaxRotY;
         }
 
-        transform.rotation = Quaternion.Euler(new Vector3(rotX, -ROT_Y_START, 0));
+        float maxRotX = Config.Instance.BoxCamMaxRotX + Config.Instance.BoxCamMaxRotXOffset;
+        float minRotX = -Config.Instance.BoxCamMaxRotX + Config.Instance.BoxCamMaxRotXOffset;
+        if (rotX > maxRotX)
+        {
+            rotX = maxRotX;
+        }
+        else if (rotX < minRotX)
+        {
+            rotX = minRotX;
+        }
+
+        transform.rotation = Quaternion.Euler(new Vector3(rotX, -Config.Instance.BoxCamRotStartY, 0));
         yRotationGimbal.transform.localRotation = Quaternion.Euler(new Vector3(0, rotY, 0));
     }
 
@@ -46,7 +48,7 @@ public class BoxCamRotator : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(defaultXRot);
         yRotationGimbal.transform.localRotation = Quaternion.Euler(defaultYRot);
-        rotX = ROT_X_START;
-        rotY = ROT_Y_START;
+        rotX = Config.Instance.BoxCamRotStartX;
+        rotY = Config.Instance.BoxCamRotStartY;
     }
 }

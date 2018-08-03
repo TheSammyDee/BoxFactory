@@ -37,10 +37,13 @@ public class Game : MonoBehaviour {
     private bool viewingResults = false;
     private bool showingGoal = false;
 
-	// Use this for initialization
-	void Start ()
+    private void Awake()
     {
         GameObject.Instantiate(configPrefab);
+    }
+
+    void Start ()
+    {
         difficultyLevel = Config.Instance.StartingDifficultyLevel;
         solutionFactory = new SolutionFactory();
         solution = solutionFactory.CreateSolution(difficultyLevel);
