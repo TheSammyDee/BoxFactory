@@ -21,7 +21,8 @@ public class SolutionFactory
 
         Box box = new Box();
         List<Box.Command> solutionCommands = new List<Box.Command>();
-
+        Box backupBox = new Box();
+        List<Box.Command> backupCommands = new List<Box.Command>();
 
         while (solutionCommands.Count < minMoves)
         {
@@ -30,16 +31,28 @@ public class SolutionFactory
             {
                 if (box.Stamp())
                 {
-                    stampCount++;
                     stampChance = Config.Instance.SolutionCreationStampIncrement;
 
                     solutionCommands = solver.Solve(box);
+
+                    // If the number of commands to make the Box exceeds the desired level,
+                    // revert back to the state of the previous stamp and try again, to save
+                    // from having to recreate and solve all the levels up to this point
                     if (solutionCommands.Count > maxMoves)
                     {
-                        ResetVariables();
-                        box = new Box();
-                        solutionCommands.Clear();
+                        box = new Box(backupBox);
+                        solutionCommands = backupCommands;
                     }
+                    else
+                    {
+                        stampCount++;
+                        backupBox = new Box(box);
+                        backupCommands = solutionCommands;
+                    }
+                }
+                else if (stampChance >= 1)
+                {
+                    stampChance = Config.Instance.SolutionCreationStampIncrement;
                 }
             }
             else

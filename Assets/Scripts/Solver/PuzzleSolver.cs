@@ -5,6 +5,27 @@ using UnityEngine;
 public class PuzzleSolver
 {
     private Dictionary<string, Dictionary<string, SolutionNode>> solutionTree;
+    private List<Box.Command> shortestCommandChain;
+    private int shortestCount;
+
+    // Use dictionaries because of the saved cost of lookup compared to ToString()
+    private Dictionary<Face.Side, string> sideNames = new Dictionary<Face.Side, string>
+    {
+        { Face.Side.Front, "Front" },
+        { Face.Side.Back, "Back" },
+        { Face.Side.Left, "Left" },
+        { Face.Side.Right, "Right" },
+        { Face.Side.Top, "Top" },
+        { Face.Side.Bottom, "Botton" }
+    };
+
+    private Dictionary<int, string> rotationNames = new Dictionary<int, string>
+    {
+        { 0, "0" },
+        { 90, "90" },
+        { 180, "180" },
+        { 270, "270" }
+    };
 
     /// <summary>
     /// Represents a solution end point of the given <see cref="Box"/> and the <see cref="Box.Command"/>s 
@@ -29,8 +50,8 @@ public class PuzzleSolver
     protected class StampPosition
     {
         public Face.Side side;
-        private float _orientation;
-        public float orientation
+        private int _orientation;
+        public int orientation
         {
             get
             {
@@ -50,7 +71,7 @@ public class PuzzleSolver
             }
         }
 
-        public StampPosition(Face.Side side, float orientation)
+        public StampPosition(Face.Side side, int orientation)
         {
             this.side = side;
             this.orientation = orientation;
@@ -78,10 +99,12 @@ public class PuzzleSolver
     {
         List<StampPosition> stampPositions = GetStampPositions(box);
         StampPosition startingPosition = new StampPosition(Face.Side.Front, 0);
-        List<List<Box.Command>> commandChains = GenerateCommandChains(startingPosition, stampPositions, new List<Box.Command>());
-        commandChains.Sort((x, y) => x.Count.CompareTo(y.Count));
+        string startingKey = GenerateStampPositionKey(startingPosition);
+        shortestCommandChain = new List<Box.Command>();
+        shortestCount = 99999999;
+        FindShortestCommandChain(startingKey, stampPositions, new List<Box.Command>());
 
-        return commandChains[0];
+        return shortestCommandChain;
     }
 
     /// <summary>
@@ -180,32 +203,41 @@ public class PuzzleSolver
         return positions;
     }
 
-    private List<List<Box.Command>> GenerateCommandChains(StampPosition currentPosition, List<StampPosition> stampPositions, List<Box.Command> commands)
+    private void FindShortestCommandChain(string startingKey, List<StampPosition> stampPositions, List<Box.Command> commands)
     {
-        string startingKey = GenerateStampPositionKey(currentPosition);
-        List<List<Box.Command>> commandChains = new List<List<Box.Command>>();
-
         for (int i = 0; i < stampPositions.Count; i++)
         {
             string stampKey = GenerateStampPositionKey(stampPositions[i]);
-            List<Box.Command> newCommands = CopyCommandList(commands);
+            
             List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].commands;
-            newCommands.AddRange(commandsToAdd);
-            newCommands.Add(Box.Command.Stamp);
+            int newCount = commands.Count + commandsToAdd.Count + 1;
 
-            if (stampPositions.Count == 1)
+            // If this path is already longer than the current shortest path, abandon this path
+            if (newCount >= shortestCount)
             {
-                commandChains.Add(newCommands);
-                return commandChains;
+                return;
             }
 
-            List<StampPosition> newPositions = CopyStampPositionsList(stampPositions);
-            newPositions.Remove(newPositions[i]);
+            List<Box.Command> newCommands = CopyCommandList(commands);
+            newCommands.AddRange(commandsToAdd);
+            newCommands.Add(Box.Command.Stamp);
+            
+            // If we have reached the end of this path without abandoning it, it is the new current shortest path
+            if (stampPositions.Count == 1)
+            {
+                shortestCommandChain = newCommands;
+                shortestCount = newCount;
 
-            commandChains.AddRange(GenerateCommandChains(stampPositions[i], newPositions, newCommands));
+                return;
+            }
+            else
+            {
+                List<StampPosition> newPositions = CopyStampPositionsList(stampPositions);
+                newPositions.Remove(newPositions[i]);
+
+                FindShortestCommandChain(stampKey, newPositions, newCommands);
+            }
         }
-
-        return commandChains;
     }
 
     protected static List<Box.Command> CopyCommandList(List<Box.Command> list)
@@ -234,11 +266,11 @@ public class PuzzleSolver
 
     private string GenerateBoxKey(Box box)
     {
-        return box.Front().side.ToString() + "_" + box.Front().rotation.ToString();
+        return sideNames[box.Front().side] + "_" + rotationNames[box.Front().rotation];
     }
 
     private string GenerateStampPositionKey(StampPosition sp)
     {
-        return sp.side.ToString() + "_" + sp.orientation.ToString();
+        return sideNames[sp.side] + "_" + rotationNames[sp.orientation];
     }
 }

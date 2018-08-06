@@ -1,9 +1,9 @@
 ﻿
 public class Stamp
 {
-    private float _rotation = 0;
+    private int _rotation = 0;
 
-    public float rotation
+    public int rotation
     {
         get
         {

@@ -24,6 +24,8 @@ public class Config : SingletonBehaviour<Config>
     private int levelMultiplier = 3;
     public int SolutionCreationLevelMultiplier { get { return levelMultiplier; } }
 
+
+
     [SerializeField]
     private float boxCamRotStartX = 0;
     public float BoxCamRotStartX { get { return boxCamRotStartX; } }

@@ -2,7 +2,7 @@
 
 public class Face
 {
-    public float rotation { get; private set; }
+    public int rotation { get; private set; }
 
     public enum Side { Front, Back, Top, Bottom, Left, Right };
 
@@ -16,7 +16,7 @@ public class Face
         stamps = new List<Stamp>();
     }
 
-    public void Rotate(float rot)
+    public void Rotate(int rot)
     {
         rotation += rot;
         while (rotation >= 360)
