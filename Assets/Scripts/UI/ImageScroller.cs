@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,22 +16,33 @@ public class ImageScroller : MonoBehaviour{
         images = new List<Image>();
     }
 
-    public void AddImage(Image image)
+    public void Add(Image image)
     {
-        Vector3 pos;
         float xPos;
+
         if (images.Count == 0)
         {
-            pos = content.transform.position;
             xPos = -(content.rect.width / 2f) + (image.rectTransform.rect.width / 2f) + spacing;
-            pos.x = xPos;
-            image.transform.SetParent(content);
-            image.transform.position = pos;
         }
         else
         {
             Image lastImage = images[images.Count - 1];
-            pos = lastImage.transform.position;
+            xPos = lastImage.rectTransform.anchoredPosition.x + (lastImage.rectTransform.rect.width / 2f) + (image.rectTransform.rect.width / 2f) + spacing;
         }
+        
+        image.transform.SetParent(content);
+        image.rectTransform.anchoredPosition = new Vector2(xPos, 0);
+
+        images.Add(image);
+    }
+
+    public void Clear()
+    {
+        foreach (Image i in images)
+        {
+            GameObject.Destroy(i.gameObject);
+        }
+
+        images.Clear();
     }
 }

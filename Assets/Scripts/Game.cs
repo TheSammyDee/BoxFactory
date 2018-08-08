@@ -16,7 +16,7 @@ public class Game : MonoBehaviour {
     public VisualBox invisiBoxPrefab;
 
     public bool viewIs2D;
-    public Text commandList;
+    public CommandList commandList;
     public Text boxTypeButtonText;
     public GameObject puzzlePanel;
     public ResultsPanel resultsPanel;
@@ -66,7 +66,7 @@ public class Game : MonoBehaviour {
 
         showingBox = solution.box;
         boxView.ApplyBox(showingBox, true);
-        commandList.text = "";
+        commandList.Clear();
         playerBox = new Box();
         boxViewer.ResetView();
         animationCommands.Clear();
@@ -90,21 +90,21 @@ public class Game : MonoBehaviour {
 
     public void RotateYLeft()
     {
-        commandList.text = commandList.text + "Left Y\n";
+        commandList.Add(Box.Command.Left90Y);
         animationCommands.Add(Box.Command.Left90Y);
         playerBox.RotateYLeft();
     }
 
     public void RotateZLeft()
     {
-        commandList.text = commandList.text + "Left Z\n";
+        commandList.Add(Box.Command.Left90Z);
         animationCommands.Add(Box.Command.Left90Z);
         playerBox.RotateZLeft();
     }
 
     public void Stamp()
     {
-        commandList.text = commandList.text + "Stamp\n";
+        commandList.Add(Box.Command.Stamp);
         animationCommands.Add(Box.Command.Stamp);
         playerBox.Stamp();
     }
