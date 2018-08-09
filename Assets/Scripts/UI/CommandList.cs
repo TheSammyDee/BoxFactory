@@ -14,11 +14,15 @@ public class CommandList : MonoBehaviour {
     [SerializeField]
     private Image yLeftImage;
 
-    private ImageScroller imageScroller;
+    [SerializeField]
+    RectTransform content;
+
+    private List<Image> images;
+
 
     private void Start()
     {
-        imageScroller = gameObject.GetComponent<ImageScroller>();
+        images = new List<Image>();
     }
 
     public void Add(Box.Command command)
@@ -41,11 +45,17 @@ public class CommandList : MonoBehaviour {
                 break;
         }
 
-        imageScroller.Add(newImage);
+        newImage.transform.SetParent(content.transform);
+        images.Add(newImage);
     }
 
     public void Clear()
     {
-        imageScroller.Clear();
+        foreach (Image i in images)
+        {
+            GameObject.Destroy(i.gameObject);
+        }
+
+        images.Clear();
     }
 }
