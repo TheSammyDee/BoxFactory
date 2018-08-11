@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,6 +71,9 @@ public class SolutionFactory
         }
 
         Solution solution = new Solution(box, solutionCommands);
+
+        Debug.Log(solver.solves);
+        solver.solves = 0;
 
         return solution;
     }

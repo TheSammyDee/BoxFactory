@@ -1,30 +1,30 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PuzzleSolver
 {
-    private Dictionary<string, Dictionary<string, SolutionNode>> solutionTree;
+    private Dictionary<int, Dictionary<int, SolutionNode>> solutionTree;
     private List<Box.Command> shortestCommandChain;
     private int shortestCount;
 
     // Use dictionaries because of the saved cost of lookup compared to ToString()
-    private Dictionary<Face.Side, string> sideNames = new Dictionary<Face.Side, string>
+    private Dictionary<Face.Side, int> sideNames = new Dictionary<Face.Side, int>
     {
-        { Face.Side.Front, "Front" },
-        { Face.Side.Back, "Back" },
-        { Face.Side.Left, "Left" },
-        { Face.Side.Right, "Right" },
-        { Face.Side.Top, "Top" },
-        { Face.Side.Bottom, "Botton" }
+        { Face.Side.Front, 10 },
+        { Face.Side.Back, 20 },
+        { Face.Side.Left, 30 },
+        { Face.Side.Right, 40 },
+        { Face.Side.Top, 50 },
+        { Face.Side.Bottom, 60 }
     };
 
-    private Dictionary<int, string> rotationNames = new Dictionary<int, string>
+    private Dictionary<int, int> rotationNames = new Dictionary<int, int>
     {
-        { 0, "0" },
-        { 90, "90" },
-        { 180, "180" },
-        { 270, "270" }
+        { 0, 1 },
+        { 90, 2 },
+        { 180, 3 },
+        { 270, 4 }
     };
 
     /// <summary>
@@ -99,7 +99,7 @@ public class PuzzleSolver
     {
         List<StampPosition> stampPositions = GetStampPositions(box);
         StampPosition startingPosition = new StampPosition(Face.Side.Front, 0);
-        string startingKey = GenerateStampPositionKey(startingPosition);
+        int startingKey = GenerateStampPositionKey(startingPosition);
         shortestCommandChain = new List<Box.Command>();
         shortestCount = 99999999;
         FindShortestCommandChain(startingKey, stampPositions, new List<Box.Command>());
@@ -112,15 +112,15 @@ public class PuzzleSolver
     /// of a <see cref="Box"/> in each orientation, from each Face in each orientation
     /// </summary>
     /// <returns></returns>
-    private Dictionary<string, Dictionary<string, SolutionNode>> BuildSolutionTree()
+    private Dictionary<int, Dictionary<int, SolutionNode>> BuildSolutionTree()
     {
-        Dictionary<string, Dictionary<string, SolutionNode>> tree = new Dictionary<string, Dictionary<string, SolutionNode>>();
+        Dictionary<int, Dictionary<int, SolutionNode>> tree = new Dictionary<int, Dictionary<int, SolutionNode>>();
         Box firstBox = new Box();
-        Dictionary<string, SolutionNode> firstBranch = BuildSolutionBranch(firstBox);
+        Dictionary<int, SolutionNode> firstBranch = BuildSolutionBranch(firstBox);
         
-        foreach (KeyValuePair<string, SolutionNode> solutionPair in firstBranch)
+        foreach (KeyValuePair<int, SolutionNode> solutionPair in firstBranch)
         {
-            string startingKey = solutionPair.Key;
+            int startingKey = solutionPair.Key;
 
             if (startingKey == GenerateBoxKey(firstBox))
             {
@@ -129,7 +129,7 @@ public class PuzzleSolver
             else
             {
                 Box nextBox = solutionPair.Value.box;
-                Dictionary<string, SolutionNode> nextBranch = BuildSolutionBranch(nextBox);
+                Dictionary<int, SolutionNode> nextBranch = BuildSolutionBranch(nextBox);
                 tree.Add(startingKey, nextBranch);
             }
         }
@@ -143,10 +143,10 @@ public class PuzzleSolver
     /// </summary>
     /// <param name="box"></param>
     /// <returns></returns>
-    private Dictionary<string, SolutionNode> BuildSolutionBranch(Box box)
+    private Dictionary<int, SolutionNode> BuildSolutionBranch(Box box)
     {
         // Create the first node for 0 moves, the starting position
-        Dictionary<string, SolutionNode> solutionBranch = new Dictionary<string, SolutionNode>();
+        Dictionary<int, SolutionNode> solutionBranch = new Dictionary<int, SolutionNode>();
         SolutionNode firstNode = new SolutionNode(new List<Box.Command>(), box);
         List<SolutionNode> nodesToCheck = new List<SolutionNode>();
         nodesToCheck.Add(firstNode);
@@ -161,7 +161,7 @@ public class PuzzleSolver
 
             Box yBox = new Box(currentNode.box);
             yBox.RotateYLeft();
-            string yKey = GenerateBoxKey(yBox);
+            int yKey = GenerateBoxKey(yBox);
             if (!solutionBranch.ContainsKey(yKey))
             {
                 List<Box.Command> yCommands = CopyCommandList(currentNode.commands);
@@ -173,7 +173,7 @@ public class PuzzleSolver
 
             Box zBox = new Box(currentNode.box);
             zBox.RotateZLeft();
-            string zKey = GenerateBoxKey(zBox);
+            int zKey = GenerateBoxKey(zBox);
             if (!solutionBranch.ContainsKey(zKey))
             {
                 List<Box.Command> zCommands = CopyCommandList(currentNode.commands);
@@ -203,11 +203,13 @@ public class PuzzleSolver
         return positions;
     }
 
-    private void FindShortestCommandChain(string startingKey, List<StampPosition> stampPositions, List<Box.Command> commands)
+    public int solves = 0;
+    private void FindShortestCommandChain(int startingKey, List<StampPosition> stampPositions, List<Box.Command> commands)
     {
         for (int i = 0; i < stampPositions.Count; i++)
         {
-            string stampKey = GenerateStampPositionKey(stampPositions[i]);
+            solves++;
+            int stampKey = GenerateStampPositionKey(stampPositions[i]);
             
             List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].commands;
             int newCount = commands.Count + commandsToAdd.Count + 1;
@@ -264,13 +266,13 @@ public class PuzzleSolver
         return newList;
     }
 
-    private string GenerateBoxKey(Box box)
+    private int GenerateBoxKey(Box box)
     {
-        return sideNames[box.Front().side] + "_" + rotationNames[box.Front().rotation];
+        return sideNames[box.Front().side] + rotationNames[box.Front().rotation];
     }
 
-    private string GenerateStampPositionKey(StampPosition sp)
+    private int GenerateStampPositionKey(StampPosition sp)
     {
-        return sideNames[sp.side] + "_" + rotationNames[sp.orientation];
+        return sideNames[sp.side] + rotationNames[sp.orientation];
     }
 }
