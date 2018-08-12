@@ -42,6 +42,7 @@ public class SolutionFactory
                     {
                         box = new Box(backupBox);
                         solutionCommands = backupCommands;
+                        Debug.Log("SolverFactory: Reverting to backup box");
                     }
                     else
                     {

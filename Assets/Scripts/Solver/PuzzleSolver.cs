@@ -5,7 +5,8 @@ using UnityEngine;
 public class PuzzleSolver
 {
     private Dictionary<int, Dictionary<int, SolutionNode>> solutionTree;
-    private List<Box.Command> shortestCommandChain;
+    private Dictionary<int, int> commandsCounts;
+    private List<int> shortestPath;
     private int shortestCount;
 
     // Use dictionaries because of the saved cost of lookup compared to ToString()
@@ -97,14 +98,24 @@ public class PuzzleSolver
     /// <returns></returns>
     public List<Box.Command> Solve(Box box)
     {
-        List<StampPosition> stampPositions = GetStampPositions(box);
-        StampPosition startingPosition = new StampPosition(Face.Side.Front, 0);
-        int startingKey = GenerateStampPositionKey(startingPosition);
-        shortestCommandChain = new List<Box.Command>();
+        List<int> stampPositions = GetStampPositions(box);
+        int startingKey = GenerateStampPositionKey(Face.Side.Front, 0);
+        shortestPath = new List<int>();
         shortestCount = 99999999;
-        FindShortestCommandChain(startingKey, stampPositions, new List<Box.Command>());
+        commandsCounts = new Dictionary<int, int>();
+        FindShortestPath(startingKey, stampPositions, new List<int> { { startingKey } }, 0);
 
-        return shortestCommandChain;
+        List<Box.Command> commandList = new List<Box.Command>();
+        for (int i = 0; i <= shortestPath.Count - 2; i++)
+        {
+            int fromKey = shortestPath[i];
+            int toKey = shortestPath[i + 1];
+
+            commandList.AddRange(solutionTree[fromKey][toKey].commands);
+            commandList.Add(Box.Command.Stamp);
+        }
+
+        return commandList;
     }
 
     /// <summary>
@@ -187,15 +198,24 @@ public class PuzzleSolver
         return solutionBranch;
     }
 
-    private List<StampPosition> GetStampPositions(Box box)
+    private List<int> GetStampPositions(Box box)
     {
-        List<StampPosition> positions = new List<StampPosition>();
+        List<int> positions = new List<int>();
 
         foreach (Face face in box.faces)
         {
             foreach (Stamp stamp in face.stamps)
             {
-                StampPosition sp = new StampPosition(face.side, -stamp.rotation);
+                int orientation = -stamp.rotation;
+                while (orientation >= 360)
+                {
+                    orientation -= 360;
+                }
+                while (orientation < 0)
+                {
+                    orientation += 360;
+                }
+                int sp = GenerateStampPositionKey(face.side, orientation);
                 positions.Add(sp);
             }
         }
@@ -204,15 +224,28 @@ public class PuzzleSolver
     }
 
     public int solves = 0;
-    private void FindShortestCommandChain(int startingKey, List<StampPosition> stampPositions, List<Box.Command> commands)
+    private void FindShortestPath(int startingKey, List<int> remainingStampPositions, List<int> stampPath, int currentCount)
     {
-        for (int i = 0; i < stampPositions.Count; i++)
+        for (int i = 0; i < remainingStampPositions.Count; i++)
         {
             solves++;
-            int stampKey = GenerateStampPositionKey(stampPositions[i]);
-            
-            List<Box.Command> commandsToAdd = solutionTree[startingKey][stampKey].commands;
-            int newCount = commands.Count + commandsToAdd.Count + 1;
+            int stampKey = remainingStampPositions[i];
+            int combinedKey = GenerateCombinedKey(startingKey, stampKey);
+            int countToAdd;
+
+            if (commandsCounts.ContainsKey(combinedKey))
+            {
+                countToAdd = commandsCounts[combinedKey];
+            }
+            else
+            {
+                countToAdd = solutionTree[startingKey][stampKey].commands.Count;
+                commandsCounts.Add(combinedKey, countToAdd);
+            }
+
+            // The count of the commands from the previous step, the commands to get to this 
+            // stamp, plus the stamp command
+            int newCount = currentCount + countToAdd + 1;
 
             // If this path is already longer than the current shortest path, abandon this path
             if (newCount >= shortestCount)
@@ -220,24 +253,23 @@ public class PuzzleSolver
                 return;
             }
 
-            List<Box.Command> newCommands = CopyCommandList(commands);
-            newCommands.AddRange(commandsToAdd);
-            newCommands.Add(Box.Command.Stamp);
+            List<int> newPath = new List<int>(stampPath);
+            newPath.Add(stampKey);
             
             // If we have reached the end of this path without abandoning it, it is the new current shortest path
-            if (stampPositions.Count == 1)
+            if (remainingStampPositions.Count == 1)
             {
-                shortestCommandChain = newCommands;
+                shortestPath = newPath;
                 shortestCount = newCount;
 
                 return;
             }
             else
             {
-                List<StampPosition> newPositions = CopyStampPositionsList(stampPositions);
-                newPositions.Remove(newPositions[i]);
+                List<int> newRemaining = new List<int>(remainingStampPositions);
+                newRemaining.Remove(newRemaining[i]);
 
-                FindShortestCommandChain(stampKey, newPositions, newCommands);
+                FindShortestPath(stampKey, newRemaining, newPath, newCount);
             }
         }
     }
@@ -254,25 +286,18 @@ public class PuzzleSolver
         return newList;
     }
 
-    protected static List<StampPosition> CopyStampPositionsList(List<StampPosition> list)
-    {
-        List<StampPosition> newList = new List<StampPosition>();
-
-        foreach (StampPosition sp in list)
-        {
-            newList.Add(new StampPosition(sp));
-        }
-
-        return newList;
-    }
-
     private int GenerateBoxKey(Box box)
     {
         return sideNames[box.Front().side] + rotationNames[box.Front().rotation];
     }
 
-    private int GenerateStampPositionKey(StampPosition sp)
+    private int GenerateStampPositionKey(Face.Side side, int orientation)
     {
-        return sideNames[sp.side] + rotationNames[sp.orientation];
+        return sideNames[side] + rotationNames[orientation];
+    }
+
+    private int GenerateCombinedKey(int startingKey, int stampKey)
+    {
+        return startingKey * 100 + stampKey;
     }
 }
