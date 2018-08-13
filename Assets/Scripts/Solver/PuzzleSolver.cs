@@ -223,7 +223,12 @@ public class PuzzleSolver
         return positions;
     }
 
+    // temp for testing
     public int solves = 0;
+
+    List<int> newPath;
+    List<int> newRemaining;
+
     private void FindShortestPath(int startingKey, List<int> remainingStampPositions, List<int> stampPath, int currentCount)
     {
         for (int i = 0; i < remainingStampPositions.Count; i++)
@@ -253,7 +258,7 @@ public class PuzzleSolver
                 return;
             }
 
-            List<int> newPath = new List<int>(stampPath);
+            newPath = new List<int>(stampPath);
             newPath.Add(stampKey);
             
             // If we have reached the end of this path without abandoning it, it is the new current shortest path
@@ -266,7 +271,7 @@ public class PuzzleSolver
             }
             else
             {
-                List<int> newRemaining = new List<int>(remainingStampPositions);
+                newRemaining = new List<int>(remainingStampPositions);
                 newRemaining.Remove(newRemaining[i]);
 
                 FindShortestPath(stampKey, newRemaining, newPath, newCount);
