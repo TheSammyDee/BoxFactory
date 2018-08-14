@@ -8,6 +8,9 @@ public class PuzzleSolver
     private Dictionary<int, int> commandsCounts;
     private List<int> shortestPath;
     private int shortestCount;
+    private Dictionary<string, List<int>> pathLists;
+
+    private const string Digits = "0123456789abcdefghijklmn";
 
     // Use dictionaries because of the saved cost of lookup compared to ToString()
     private Dictionary<Face.Side, int> sideNames = new Dictionary<Face.Side, int>
@@ -103,6 +106,7 @@ public class PuzzleSolver
         shortestPath = new List<int>();
         shortestCount = 99999999;
         commandsCounts = new Dictionary<int, int>();
+        pathLists = new Dictionary<string, List<int>>();
         FindShortestPath(startingKey, stampPositions, new List<int> { { startingKey } }, 0);
 
         List<Box.Command> commandList = new List<Box.Command>();
@@ -271,12 +275,42 @@ public class PuzzleSolver
             }
             else
             {
-                newRemaining = new List<int>(remainingStampPositions);
-                newRemaining.Remove(newRemaining[i]);
+                string remainingHash = NextListLessHash(remainingStampPositions, remainingStampPositions[i]);
+                if (pathLists.ContainsKey(remainingHash))
+                {
+                    newRemaining = pathLists[remainingHash];
+                }
+                else
+                {
+                    newRemaining = new List<int>(remainingStampPositions);
+                    newRemaining.Remove(newRemaining[i]);
+                    pathLists.Add(remainingHash, newRemaining);
+                }
 
                 FindShortestPath(stampKey, newRemaining, newPath, newCount);
             }
         }
+    }
+
+    private string NextListLessHash(List<int> list, int toRemove)
+    {
+        bool removed = false;
+        char[] buffer = new char[list.Count - 1];
+        
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            if (!removed && list[i] == toRemove)
+            {
+                removed = true;
+                continue;
+            }
+            else
+            {
+                buffer[i] = Digits[list[i]];
+            }
+        }
+
+        return new string(buffer);
     }
 
     protected static List<Box.Command> CopyCommandList(List<Box.Command> list)
@@ -293,12 +327,12 @@ public class PuzzleSolver
 
     private int GenerateBoxKey(Box box)
     {
-        return sideNames[box.Front().side] + rotationNames[box.Front().rotation];
+        return GenerateStampPositionKey(box.Front().side, box.Front().rotation);
     }
 
     private int GenerateStampPositionKey(Face.Side side, int orientation)
     {
-        return sideNames[side] + rotationNames[orientation];
+        return (int)side * 4 + (orientation / 90);
     }
 
     private int GenerateCombinedKey(int startingKey, int stampKey)
