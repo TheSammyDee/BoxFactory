@@ -297,16 +297,17 @@ public class PuzzleSolver
         bool removed = false;
         char[] buffer = new char[list.Count - 1];
         
-        for (int i = 0; i < buffer.Length; i++)
+        for (int i = 0; i < list.Count; i++)
         {
-            if (!removed && list[i] == toRemove)
+            if (list[i] == toRemove)
             {
                 removed = true;
                 continue;
             }
             else
             {
-                buffer[i] = Digits[list[i]];
+                int j = removed ? i - 1 : i;
+                buffer[j] = Digits[list[i]];
             }
         }
 
