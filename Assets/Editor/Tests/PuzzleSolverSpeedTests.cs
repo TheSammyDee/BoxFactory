@@ -70,6 +70,6 @@ public class PuzzleSolverSpeedTests
 
         stopwatch.Stop();
 
-        UnityEngine.Debug.Log(solver.solves + " solves in " + (stopwatch.ElapsedMilliseconds / 1000f) + " seconds");
+        UnityEngine.Debug.Log((stopwatch.ElapsedMilliseconds / 1000f) + " seconds");
     }
 }
