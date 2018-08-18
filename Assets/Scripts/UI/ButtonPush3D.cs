@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -23,7 +23,7 @@ public class ButtonPush3D : Button
 
     protected void Update()
     {
-        if (IsPressed() && !pressing)
+        if (IsPressed() && !pressing && interactable)
         {
             MoveTextDown();
             pressing = true;
