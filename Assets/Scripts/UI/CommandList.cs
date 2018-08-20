@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(ScrollRect))]
 public class CommandList : MonoBehaviour {
 
     [SerializeField]
@@ -18,11 +19,13 @@ public class CommandList : MonoBehaviour {
     RectTransform content;
 
     private List<Image> images;
+    private ScrollRect scrollRect;
 
 
     private void Start()
     {
         images = new List<Image>();
+        scrollRect = this.GetComponent<ScrollRect>();
     }
 
     public void Add(Box.Command command)
@@ -42,11 +45,13 @@ public class CommandList : MonoBehaviour {
                 break;
             default:
                 newImage = new GameObject().AddComponent<Image>();
+                Debug.LogError("Unknown command passed to CommandList");
                 break;
         }
 
         newImage.transform.SetParent(content.transform);
         images.Add(newImage);
+        StartCoroutine(ScrollToEnd());
     }
 
     public void Clear()
@@ -57,5 +62,11 @@ public class CommandList : MonoBehaviour {
         }
 
         images.Clear();
+    }
+
+    private IEnumerator ScrollToEnd()
+    {
+        yield return new WaitForEndOfFrame();
+        scrollRect.horizontalNormalizedPosition = 1;
     }
 }
