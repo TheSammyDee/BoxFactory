@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingDifficultyLevel: 1
   animationPauseTime: 0.6
-  animationRotationSpeed: 90
+  animationRotationSpeed: 360
   stampIncrement: 0.16666667
   levelMultiplier: 3
   boxCamRotStartX: 0
