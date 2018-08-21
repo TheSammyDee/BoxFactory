@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,9 @@ public class Config : SingletonBehaviour<Config>
     private int levelMultiplier = 3;
     public int SolutionCreationLevelMultiplier { get { return levelMultiplier; } }
 
-
+    [SerializeField]
+    private int maxDifficultyLevel = 9;
+    public int SolutionCreationMaxDifficultyLevel { get { return maxDifficultyLevel; } }
 
     [SerializeField]
     private float boxCamRotStartX = 0;

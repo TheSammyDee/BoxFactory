@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +22,10 @@ public class Game : MonoBehaviour {
     public ResultsPanel resultsPanel;
     public Button boxTypeButton;
     public Text levelText;
+    [SerializeField]
+    private Button levelUpButton;
+    [SerializeField]
+    private Button levelDownButton;
 
     public BoxViewer boxViewer;
 
@@ -45,6 +49,8 @@ public class Game : MonoBehaviour {
     void Start ()
     {
         difficultyLevel = Config.Instance.StartingDifficultyLevel;
+        levelUpButton.interactable = difficultyLevel != Config.Instance.SolutionCreationMaxDifficultyLevel;
+        levelDownButton.interactable = difficultyLevel != 1;
         solutionFactory = new SolutionFactory();
         solution = solutionFactory.CreateSolution(difficultyLevel);
         showingBox = solution.box;
@@ -164,11 +170,29 @@ public class Game : MonoBehaviour {
     {
         difficultyLevel++;
         levelText.text = difficultyLevel.ToString();
+
+        if (difficultyLevel == Config.Instance.SolutionCreationMaxDifficultyLevel)
+        {
+            levelUpButton.interactable = false;
+        }
+        else if (difficultyLevel == 2)
+        {
+            levelDownButton.interactable = true;
+        }
     }
 
     public void DecreaseDifficultyLevel()
     {
         difficultyLevel--;
         levelText.text = difficultyLevel.ToString();
+
+        if (difficultyLevel == 1)
+        {
+            levelDownButton.interactable = false;
+        }
+        else if (difficultyLevel == Config.Instance.SolutionCreationMaxDifficultyLevel - 1)
+        {
+            levelUpButton.interactable = true;
+        }
     }
 }
